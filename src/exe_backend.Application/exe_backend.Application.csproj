@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+   
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\exe_backend.Contract\exe_backend.Contract.csproj" />
+    <ProjectReference Include="..\exe_backend.Domain\exe_backend.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
