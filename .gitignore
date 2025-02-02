@@ -1,0 +1,30 @@
+# .NET
+bin/
+obj/
+*.user
+*.vspscc
+.vscode/
+.vs/
+
+# Rider
+.idea/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# ASP.NET
+wwwroot/
+node_modules/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignore .env file
+.env
+/src/exe_backend.API/appsettings.Development.json
+
+.fake

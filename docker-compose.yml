@@ -1,0 +1,9 @@
+services:
+  exedb:
+    image: mcr.microsoft.com/mssql/server
+  
+  distributedcache:
+    image: redis
+
+volumes:
+  sqlserver_exedb:
