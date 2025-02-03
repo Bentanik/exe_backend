@@ -6,3 +6,8 @@ global using Newtonsoft.Json.Serialization;
 global using exe_backend.Infrastructure.Caching;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
+global using MailKit.Security;
+global using MailKit.Net.Smtp;
+global using MimeKit;
+global using exe_backend.Contract.Settings;
+global using Microsoft.Extensions.Options;

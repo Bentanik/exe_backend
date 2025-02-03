@@ -9,3 +9,7 @@ global using exe_backend.Contract.Infrastructure.Services;
 global using exe_backend.Contract.Shared;
 global using exe_backend.Domain.Models;
 global using exe_backend.Application.Behaviors;
+global using exe_backend.Contract.Exceptions.BussinessExceptions;
+global using Newtonsoft.Json;
+global using exe_backend.Application.Workers;
+global using Quartz;

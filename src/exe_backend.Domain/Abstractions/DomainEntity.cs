@@ -1,6 +1,6 @@
 namespace exe_backend.Domain.Abstractions;
 
-public class DomainEntity<TKey>
+public class DomainEntity<TKey> : IDomainEntity<TKey>
 {
     public TKey Id { get; set; } = default!;
     public DateTime? CreatedDate { get; set; }

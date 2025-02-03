@@ -8,5 +8,10 @@
   "ConnectionStrings": {
     "Database": "",
     "Redis": ""
+  },
+  "EmailSetting": {
+    "EmailHost": "",
+    "EmailUsername": "",
+    "EmailPassword": ""
   }
 }
