@@ -1,3 +1,4 @@
+using exe_backend.Api.DepedencyInjection.Extensions;
 using exe_backend.Infrastructure.DepedencyInjection.Extensions;
 using exe_backend.Persistence.DepedencyInjection.Extensions;
 using HealthChecks.UI.Client;
@@ -16,6 +17,9 @@ builder.Services
         options.SubstituteApiVersionInUrl = true;
     });
 
+// Configure appsettings
+builder.Services.AddConfigurationAppSetting(builder.Configuration);
+
 // Register MediatR
 builder.Services.AddConfigureMediatR();
 
@@ -28,13 +32,19 @@ builder.Services.AddSqlConfiguration();
 // Register Redis
 builder.Services.AddConfigurationRedis(builder.Configuration);
 
+// Register Quartz
+builder.Services.AddConfigureQuartz();
+
 // Register HealthChecks
 builder.Services.AddHealthChecks()
      .AddSqlServer(builder.Configuration.GetConnectionString("Database")!)
      .AddRedis(builder.Configuration.GetConnectionString("Redis")!);
 
 // Register Persistence services
-builder.Services.AddPersistenceService();
+builder.Services.AddPersistenceServices();
+
+// Register Infrastructure service
+builder.Services.AddInfrastructureServices();
 
 var app = builder.Build();
 

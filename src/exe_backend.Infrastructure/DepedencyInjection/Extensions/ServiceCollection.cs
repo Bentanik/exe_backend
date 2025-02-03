@@ -1,3 +1,6 @@
+using exe_backend.Infrastructure.Services;
+using Notification.API.Infrastructure.Services;
+
 namespace exe_backend.Infrastructure.DepedencyInjection.Extensions;
 
 public static class ServiceCollectionExtensions
@@ -14,5 +17,12 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+    }
+
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+    {
+        services.AddScoped<IPasswordHashService, PasswordHashService>()
+                .AddScoped<IEmailService, EmailService>();
+        return services;
     }
 }

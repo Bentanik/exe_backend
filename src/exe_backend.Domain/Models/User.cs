@@ -6,14 +6,18 @@ public class User : DomainEntity<Guid>
 {
     public string Email { get; private set; } = default!;
     public string Password { get; private set; } = default!;
-
-    public static User Create(Guid Id, string email, string password)
+    public string FullName { get; private set; } = default!;
+    public bool IsActive { get; private set; } = default!; // Active email
+    public static User Create(Guid Id, string email, string password, string fullName)
     {
         return new User
         {
             Id = Id,
             Email = email,
-            Password = password
+            Password = password,
+            FullName = fullName,
+            IsActive = false,
+            IsDeleted = false
         };
     }
 }
