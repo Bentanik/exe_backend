@@ -11,3 +11,6 @@ global using MailKit.Net.Smtp;
 global using MimeKit;
 global using exe_backend.Contract.Settings;
 global using Microsoft.Extensions.Options;
+global using Microsoft.AspNetCore.Http;
+global using CloudinaryDotNet;
+global using CloudinaryDotNet.Actions;

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using exe_backend.Persistence;
 
@@ -11,9 +12,11 @@ using exe_backend.Persistence;
 namespace exe_backend.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250205030126_AddFiledMedia")]
+    partial class AddFiledMedia
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,10 +55,10 @@ namespace exe_backend.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PublicAvatarId")
+                    b.Property<string>("PublicMediaId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PublicAvatarUrl")
+                    b.Property<string>("PublicMediaUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
