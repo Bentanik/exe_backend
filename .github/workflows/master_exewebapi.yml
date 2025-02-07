@@ -15,16 +15,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Kiểm tra thư mục làm việc hiện tại
+      - name: Print current directory
+        run: pwd
+
+      # Liệt kê các tệp và thư mục để kiểm tra tệp .sln
+      - name: List files to check structure
+        run: ls -R
+
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
 
+      # Thay đổi thư mục làm việc để trỏ đến thư mục chứa tệp .sln
+      - name: Change directory to the folder containing the .sln
+        run: cd src/exe_backend.Api
+
+      # Xây dựng và xuất bản ứng dụng
       - name: Build with dotnet
-        run: dotnet build exe_backend/src/exe_backend.Api/exe_backend.Api.sln --configuration Release  # Chỉ định tệp .sln
+        run: dotnet build exe_backend.Api.sln --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish exe_backend/src/exe_backend.Api/exe_backend.Api.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp  # Chỉ định tệp .sln
+        run: dotnet publish exe_backend.Api.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
