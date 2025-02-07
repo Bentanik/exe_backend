@@ -8,4 +8,5 @@ public interface ITokenGeneratorService
     string GenerateRefreshToken(Guid userId, int roleName);
     string ValidateAndGetUserIdFromRefreshToken(string refreshToken);
     string GenerateForgotPasswordToken(Guid userId);
+    string ValidateAndGetUserIdForgotPasswordToken(string forgotPasswordToken);
 }

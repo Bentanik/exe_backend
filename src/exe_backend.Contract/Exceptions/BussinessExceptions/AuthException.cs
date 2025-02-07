@@ -12,7 +12,7 @@ public static class AuthException
         { }
     }
 
-     public sealed class UserNotExistException : NotFoundException
+    public sealed class UserNotExistException : NotFoundException
     {
         public UserNotExistException()
                 : base(AuthMessage.EmailNotExistException.GetMessage().Message,
@@ -20,11 +20,27 @@ public static class AuthException
         { }
     }
 
-         public sealed class PasswordNotMatchException : BadRequestException
+    public sealed class PasswordNotMatchException : BadRequestException
     {
         public PasswordNotMatchException()
                 : base(AuthMessage.PasswordNotMatchException.GetMessage().Message,
                     AuthMessage.PasswordNotMatchException.GetMessage().Code)
+        { }
+    }
+
+    public sealed class TokenPasswordExpiredException : BadRequestException
+    {
+        public TokenPasswordExpiredException()
+                : base(AuthMessage.TokenPasswordExpiredException.GetMessage().Message,
+                    AuthMessage.TokenPasswordExpiredException.GetMessage().Code)
+        { }
+    }
+
+    public sealed class UserBannedException : BadRequestException
+    {
+        public UserBannedException()
+                : base(AuthMessage.UserBannedException.GetMessage().Message,
+                    AuthMessage.UserBannedException.GetMessage().Code)
         { }
     }
 }

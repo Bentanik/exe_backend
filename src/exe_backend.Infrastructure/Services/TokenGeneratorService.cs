@@ -70,7 +70,7 @@ public sealed class TokenGeneratorService
             (_authSetting.ForgotPasswordSecretToken,
             _authSetting.Issuer,
             _authSetting.Audience,
-            _authSetting.ForgotPasswordSecretMinute,
+            _authSetting.ForgotPasswordExpMinute,
             claims);
     }
 
@@ -98,6 +98,35 @@ public sealed class TokenGeneratorService
         }
         catch (Exception)
         {
+            return null!;
+        }
+    }
+
+    public string ValidateAndGetUserIdForgotPasswordToken(string forgotPasswordToken)
+    {
+        TokenValidationParameters validationParameters = new()
+        {
+            IssuerSigningKey = new SymmetricSecurityKey
+            (Encoding.UTF8.GetBytes(_authSetting.ForgotPasswordSecretToken)),
+            ValidIssuer = _authSetting.Issuer,
+            ValidAudience = _authSetting.Audience,
+            ValidateIssuerSigningKey = true,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ClockSkew = TimeSpan.Zero,
+        };
+
+        JwtSecurityTokenHandler tokenHandler = new();
+        try
+        {
+            var principal = tokenHandler.ValidateToken(forgotPasswordToken, validationParameters, out SecurityToken validatedToken);
+            var userIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "UserId");
+
+            return userIdClaim?.Value!;
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine(ex);
             return null!;
         }
     }

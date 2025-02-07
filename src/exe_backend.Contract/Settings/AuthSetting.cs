@@ -10,5 +10,5 @@ public class AuthSetting
     public double AccessTokenExpMinute { get; set; } = default!;
     public double RefreshTokenExpMinute { get; set; } = default!;
     public string ForgotPasswordSecretToken { get; set; } = default!;
-    public double ForgotPasswordSecretMinute { get; set; } = default!;
+    public double ForgotPasswordExpMinute { get; set; } = default!;
 }

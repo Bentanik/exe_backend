@@ -16,13 +16,16 @@ public sealed class ConfirmForgotPasswordCommandHandler
         // Check if user not exist
         if(user == null) throw new AuthException.UserNotExistException();
 
+        // Check if user has been banned
+        if(user.IsDeleted == true) throw new AuthException.UserBannedException();
+        // Generate forgot password token
         var forgotPasswordToken = tokenGeneratorService.GenerateForgotPasswordToken(user.Id);
-    
-        // Send event when created forgotPasswordToken
-        var userDto = new UserDto(Email: user.Email);
 
+        // Create event
+        var userDto = new UserDto(Email: user.Email);
         var userPasswordResetConfirmedEvent = new Event.UserPasswordResetConfirmedEvent(Guid.NewGuid(), userDto, forgotPasswordToken);
 
+        // Send event
         await publisher.Publish(userPasswordResetConfirmedEvent, cancellationToken);
 
         return Result.Success(new Success

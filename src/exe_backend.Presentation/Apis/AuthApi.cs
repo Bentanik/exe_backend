@@ -16,6 +16,7 @@ public static class AuthApi
         group.MapPost("register", HandleRegisterAsync);
         group.MapPost("login", HandleLoginAsync);
         group.MapPost("confirm-forgot-password", HandleConfirmForgotPasswordAsync);
+        group.MapPost("change-password", HandleChangePasswordAsync);
         return builder;
     }
 
@@ -69,7 +70,14 @@ public static class AuthApi
         return Results.Ok(result);
     }
 
+    private static async Task<IResult> HandleChangePasswordAsync(ISender sender, [FromBody] Command.ChangePasswordCommand request)
+    {
+        var result = await sender.Send(request);
+        if (result.IsFailure)
+            return HandlerFailure(result);
 
+        return Results.Ok(result);
+    }
 
     private static IResult HandlerFailure(Result result) =>
          result switch
