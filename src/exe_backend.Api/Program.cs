@@ -46,6 +46,22 @@ builder.Services.AddPersistenceServices();
 // Register Infrastructure service
 builder.Services.AddInfrastructureServices();
 
+// CORS
+builder.Services.AddCors(options =>
+{
+    // options.AddPolicy("AllowSpecificOrigin",
+    //     option =>
+    //     {
+    //         option.WithOrigins("http://localhost")
+    //               .AllowAnyHeader()
+    //               .AllowAnyMethod()
+    //               .AllowCredentials();
+    //     });
+
+    options.AddPolicy("AllowAll",
+        policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -69,6 +85,9 @@ app.UseHealthChecks("/health",
     {
         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
     });
+
+// CORS
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 app.Run();
