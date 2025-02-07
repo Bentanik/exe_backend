@@ -25,6 +25,8 @@ public sealed class ConfirmForgotPasswordCommandHandler
 
         await publisher.Publish(userPasswordResetConfirmedEvent, cancellationToken);
 
-        return Result.Success(new Success("", ""));
+        return Result.Success(new Success
+        (AuthMessage.ConfirmForgotPasswordSuccessfully.GetMessage().Code,
+        AuthMessage.ConfirmForgotPasswordSuccessfully.GetMessage().Message));
     }
 }

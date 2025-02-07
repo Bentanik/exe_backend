@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "exe_backend.Presentation", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "exe_backend.Persistence", "src\exe_backend.Persistence\exe_backend.Persistence.csproj", "{97458D17-4B7F-4462-81A4-B0CBE2CBFBFC}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{18EF7484-E627-491D-A488-8D0E9F33EEB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{97458D17-4B7F-4462-81A4-B0CBE2CBFBFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97458D17-4B7F-4462-81A4-B0CBE2CBFBFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97458D17-4B7F-4462-81A4-B0CBE2CBFBFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18EF7484-E627-491D-A488-8D0E9F33EEB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18EF7484-E627-491D-A488-8D0E9F33EEB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18EF7484-E627-491D-A488-8D0E9F33EEB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18EF7484-E627-491D-A488-8D0E9F33EEB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -17,3 +17,34 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    
+  exe_backend.api:
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_HTTP_PORTS=${ASPNETCORE_HTTP_PORTS}
+      - ASPNETCORE_HTTPS_PORTS=${ASPNETCORE_HTTPS_PORTS}
+      - ConnectionStrings__Redis=distributedcache:6379
+      - ConnectionStrings__Database=Server=exedb;Database=exedb;User Id=sa;Password=${SA_PASSWORD};Encrypt=False;TrustServerCertificate=True
+      - AuthConfiguration__AccessSecretToken=${ACCESS_SECRET_TOKEN}
+      - AuthConfiguration__AccessTokenExpMinute=${ACCESS_TOKEN_EXP_MINUTE}
+      - AuthConfiguration__Audience=${AUDIENCE}
+      - AuthConfiguration__Issuer=${ISSUER}
+      - AuthConfiguration__RefreshSecretToken=${REFRESH_SECRET_TOKEN}
+      - AuthConfiguration__RefreshTokenExpMinute=${REFRESH_TOKEN_EXP_MINUTE}
+      - CloudinarySetting__ApiKey=${CLOUDINARY_API_KEY}
+      - CloudinarySetting__ApiSecret=${CLOUDINARY_API_SECRET}
+      - CloudinarySetting__CloudName=${CLOUDINARY_CLOUD_NAME}
+      - CloudinarySetting__Folder=${CLOUDINARY_FOLDER}
+      - UserConfiguration__Avatar__AvatarUrl=${USER_AVATAR_URL}
+      - UserConfiguration__Avatar__AvatarId=${USER_AVATAR_ID}
+    depends_on:
+      - exedb
+      - distributedcache
+    ports:
+      - "6000:${ASPNETCORE_HTTP_PORTS}"
+      - "6060:${ASPNETCORE_HTTPS_PORTS}"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

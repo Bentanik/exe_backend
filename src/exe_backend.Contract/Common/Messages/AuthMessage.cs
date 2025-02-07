@@ -15,6 +15,9 @@ public enum AuthMessage
     PasswordNotMatchException,
 
     [Message("Đăng nhập thành công", "auth05")]
-    LoginSuccessfully
+    LoginSuccessfully,
+
+    [Message("Xin vui lòng vô Gmail để kiểm tra", "auth06")]
+    ConfirmForgotPasswordSuccessfully
 }
 

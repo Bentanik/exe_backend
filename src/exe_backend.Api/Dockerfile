@@ -13,6 +13,12 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/exe_backend.Api/exe_backend.Api.csproj", "src/exe_backend.Api/"]
+COPY ["src/exe_backend.Application/exe_backend.Application.csproj", "src/exe_backend.Application/"]
+COPY ["src/exe_backend.Contract/exe_backend.Contract.csproj", "src/exe_backend.Contract/"]
+COPY ["src/exe_backend.Domain/exe_backend.Domain.csproj", "src/exe_backend.Domain/"]
+COPY ["src/exe_backend.Infrastructure/exe_backend.Infrastructure.csproj", "src/exe_backend.Infrastructure/"]
+COPY ["src/exe_backend.Persistence/exe_backend.Persistence.csproj", "src/exe_backend.Persistence/"]
+COPY ["src/exe_backend.Presentation/exe_backend.Presentation.csproj", "src/exe_backend.Presentation/"]
 RUN dotnet restore "./src/exe_backend.Api/exe_backend.Api.csproj"
 COPY . .
 WORKDIR "/src/src/exe_backend.Api"

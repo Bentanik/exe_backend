@@ -3,7 +3,6 @@ using exe_backend.Application.Persistence.Repository;
 using exe_backend.Persistence.Interceptors;
 using exe_backend.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace exe_backend.Persistence.DepedencyInjection.Extensions;
 
