@@ -22,7 +22,10 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
     {
         services.AddScoped<IPasswordHashService, PasswordHashService>()
-                .AddScoped<IEmailService, EmailService>();
+                .AddScoped<IEmailService, EmailService>()
+                .AddScoped<ITokenGeneratorService, TokenGeneratorService>()
+                .AddScoped<IMediaService, MediaService>();
+                
         return services;
     }
 }

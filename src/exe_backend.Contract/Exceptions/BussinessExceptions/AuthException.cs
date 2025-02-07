@@ -11,4 +11,20 @@ public static class AuthException
                     AuthMessage.EmailExistException.GetMessage().Code)
         { }
     }
+
+     public sealed class UserNotExistException : NotFoundException
+    {
+        public UserNotExistException()
+                : base(AuthMessage.EmailNotExistException.GetMessage().Message,
+                    AuthMessage.EmailNotExistException.GetMessage().Code)
+        { }
+    }
+
+         public sealed class PasswordNotMatchException : BadRequestException
+    {
+        public PasswordNotMatchException()
+                : base(AuthMessage.PasswordNotMatchException.GetMessage().Message,
+                    AuthMessage.PasswordNotMatchException.GetMessage().Code)
+        { }
+    }
 }

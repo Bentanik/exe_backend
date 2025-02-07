@@ -1,9 +1,14 @@
 services:
   exedb:
     image: mcr.microsoft.com/mssql/server
-  
+
   distributedcache:
     image: redis
 
+  exe_backend.api:
+    image: ${DOCKER_REGISTRY-}exe_backend_api
+    build:
+      context: .
+      dockerfile: src/exe_backend.Api/Dockerfile
 volumes:
   sqlserver_exedb:

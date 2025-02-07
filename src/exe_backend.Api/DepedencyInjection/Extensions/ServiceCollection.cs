@@ -6,7 +6,10 @@ public static class ServiceCollectionExtensions
      (this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .Configure<EmailSetting>(configuration.GetSection(EmailSetting.SectionName));
+            .Configure<EmailSetting>(configuration.GetSection(EmailSetting.SectionName))
+            .Configure<AuthSetting>(configuration.GetSection(AuthSetting.SectionName))
+            .Configure<CloudinarySetting>(configuration.GetSection(CloudinarySetting.SectionName))
+            .Configure<UserSetting>(configuration.GetSection(UserSetting.SectionName));
 
         return services;
     }
