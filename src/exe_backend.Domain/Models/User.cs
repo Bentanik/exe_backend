@@ -24,4 +24,9 @@ public class User : DomainEntity<Guid>
             PublicAvatarUrl = publicMediaUrl
         };
     }
+
+    public void Update(string? password = null)
+    {
+        if(password != null) Password = password;
+    }
 }

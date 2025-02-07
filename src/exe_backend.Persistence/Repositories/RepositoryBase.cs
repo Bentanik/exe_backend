@@ -51,8 +51,8 @@ public class RepositoryBase<TEntity, TKey> : IRepositoryBase<TEntity, TKey>, IDi
 
     public void Add(TEntity entity)
     {
-        entity.CreatedDate = DateTime.UtcNow;
-        entity.ModifiedDate = DateTime.UtcNow;
+        entity.CreatedDate = DateTime.Now;
+        entity.ModifiedDate = DateTime.Now;
         _context.Add(entity);
     }
 
@@ -64,7 +64,7 @@ public class RepositoryBase<TEntity, TKey> : IRepositoryBase<TEntity, TKey>, IDi
 
     public void Update(TEntity entity)
     {
-        entity.ModifiedDate = DateTime.UtcNow;
+        entity.ModifiedDate = DateTime.Now;
         _context.Set<TEntity>().Update(entity);
     }
 
@@ -72,8 +72,8 @@ public class RepositoryBase<TEntity, TKey> : IRepositoryBase<TEntity, TKey>, IDi
     {
         foreach (var entity in entities)
         {
-            entity.CreatedDate = DateTime.UtcNow;
-            entity.ModifiedDate = DateTime.UtcNow;
+            entity.CreatedDate = DateTime.Now;
+            entity.ModifiedDate = DateTime.Now;
         }
         _context.AddRange(entities);
     }

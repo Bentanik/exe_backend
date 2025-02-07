@@ -18,6 +18,15 @@ public enum AuthMessage
     LoginSuccessfully,
 
     [Message("Xin vui lòng vô Gmail để kiểm tra", "auth06")]
-    ConfirmForgotPasswordSuccessfully
+    ConfirmForgotPasswordSuccessfully,
+
+    [Message("Đã hết thời gian xóa mật khẩu, xin vui lòng thử lại", "auth07")]
+    TokenPasswordExpiredException,
+
+    [Message("Tài khoản này đã bị cấm", "auth08")]
+    UserBannedException,
+
+    [Message("Thay đổi mật khẩu thành công", "auth09")]
+    ChangePasswordSuccessfully
 }
 
