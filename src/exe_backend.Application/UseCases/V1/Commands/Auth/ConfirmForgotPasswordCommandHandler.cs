@@ -18,6 +18,7 @@ public sealed class ConfirmForgotPasswordCommandHandler
 
         // Check if user has been banned
         if(user.IsDeleted == true) throw new AuthException.UserBannedException();
+        
         // Generate forgot password token
         var forgotPasswordToken = tokenGeneratorService.GenerateForgotPasswordToken(user.Id);
 

@@ -7,10 +7,11 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
 
-    public UnitOfWork(ApplicationDbContext context, IUserRepository userRepository)
+    public UnitOfWork(ApplicationDbContext context, IUserRepository userRepository, IRoleRepository roleRepository)
     {
         _context = context;
         UserRepository = userRepository;
+        RoleRepository = roleRepository;
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -21,4 +22,5 @@ public class UnitOfWork : IUnitOfWork
 
     public IUserRepository UserRepository { get; }
 
+    public IRoleRepository RoleRepository { get; }
 }
