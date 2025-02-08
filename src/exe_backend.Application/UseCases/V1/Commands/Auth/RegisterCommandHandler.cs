@@ -24,7 +24,7 @@ public sealed class RegisterCommandHandler
         var passwordHashed = passwordHashService.HashPassword(command.Password);
 
         // Create user and save Db
-
+    
         // Find Role
         var roleMember = await unitOfWork.RoleRepository
             .FindSingleAsync(r => r.Name == RoleEnum.Member.ToString());

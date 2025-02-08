@@ -19,3 +19,5 @@ global using exe_backend.Contract.Abstractions.Shared;
 global using exe_backend.Contract.Common.Constants;
 global using exe_backend.Contract.Settings;
 global using Microsoft.Extensions.Options;
+global using exe_backend.Contract.Events;
+global using MassTransit;

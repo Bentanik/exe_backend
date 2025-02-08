@@ -1,5 +1,8 @@
+using System.Reflection;
+using CloudinaryDotNet;
 using exe_backend.Api.DepedencyInjection.Extensions;
 using exe_backend.Infrastructure.DepedencyInjection.Extensions;
+using exe_backend.Infrastructure.Masstransit;
 using exe_backend.Persistence.DepedencyInjection.Extensions;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -44,7 +47,7 @@ builder.Services.AddHealthChecks()
 builder.Services.AddPersistenceServices();
 
 // Register Infrastructure service
-builder.Services.AddInfrastructureServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 // CORS
 builder.Services.AddCors(options =>
