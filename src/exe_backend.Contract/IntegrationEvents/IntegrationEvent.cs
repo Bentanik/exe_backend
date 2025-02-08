@@ -1,5 +1,4 @@
-namespace exe_backend.Contract.Events;
-
+namespace exe_backend.Contract.IntegrationEvents;
 public record IntegrationEvent
 {
     public Guid Id => Guid.NewGuid();

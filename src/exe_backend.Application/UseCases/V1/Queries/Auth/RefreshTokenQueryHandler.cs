@@ -7,9 +7,9 @@ public sealed class RefreshTokenQueryHandler
     (ITokenGeneratorService tokenGeneratorService,
     IUnitOfWork unitOfWork,
     ISender sender)
-    : IQueryHandler<Query.RefreshTokenQuery, Success<Response.LoginResponse>>
+    : IQueryHandler<Query.RefreshTokenQuery, Success<Contract.Services.Auth.Response.LoginResponse>>
 {
-    public async Task<Result<Success<Response.LoginResponse>>>
+    public async Task<Result<Success<Contract.Services.Auth.Response.LoginResponse>>>
         Handle(Query.RefreshTokenQuery query, CancellationToken cancellationToken)
     {
         var userIdClaim = tokenGeneratorService.ValidateAndGetUserIdFromRefreshToken(query.RefreshToken);
@@ -37,9 +37,9 @@ public sealed class RefreshTokenQueryHandler
         //  Response
         var loginDto = new LoginDTO(authTokenDto, authUserDto);
 
-        var response = new Response.LoginResponse(loginDto);
+        var response = new Contract.Services.Auth.Response.LoginResponse(loginDto);
 
-        return Result.Success(new Success<Response.LoginResponse>
+        return Result.Success(new Success<Contract.Services.Auth.Response.LoginResponse>
         (AuthMessage.RefreshTokenSuccessfully.GetMessage().Code,
          AuthMessage.RefreshTokenSuccessfully.GetMessage().Message, response));
     }

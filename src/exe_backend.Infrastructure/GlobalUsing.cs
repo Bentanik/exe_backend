@@ -16,5 +16,5 @@ global using CloudinaryDotNet;
 global using CloudinaryDotNet.Actions;
 global using MassTransit;
 global using MediatR;
-global using exe_backend.Contract.Events;
+global using exe_backend.Contract.IntegrationEvents;
 global using Microsoft.Extensions.Logging;

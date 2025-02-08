@@ -35,9 +35,6 @@ builder.Services.AddSqlConfiguration();
 // Register Redis
 builder.Services.AddConfigurationRedis(builder.Configuration);
 
-// Register Quartz
-builder.Services.AddConfigureQuartz();
-
 // Register HealthChecks
 builder.Services.AddHealthChecks()
      .AddSqlServer(builder.Configuration.GetConnectionString("Database")!)
@@ -61,9 +58,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    // Seed database
-    await app.InitialiseDatabaseAsync();
 }
+// Seed database
+await app.InitialiseDatabaseAsync();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
