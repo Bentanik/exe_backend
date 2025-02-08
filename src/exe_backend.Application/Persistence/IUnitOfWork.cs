@@ -6,4 +6,6 @@ public interface IUnitOfWork : IAsyncDisposable
 {
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     IUserRepository UserRepository { get; }
+    IRoleRepository RoleRepository { get; }
+    ICourseRepository CourseRepository { get; }
 }

@@ -1,5 +1,5 @@
 using exe_backend.Application.Persistence;
-using exe_backend.Application.Persistence.Repository;
+using exe_backend.Persistence.DepedencyInjection.Options;
 using exe_backend.Persistence.Interceptors;
 using exe_backend.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -11,6 +11,9 @@ public static class ServiceCollectionExtensions
     public static void AddSqlConfiguration(this IServiceCollection services)
     {
         services.AddSingleton<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+
+        // Regist InitialData
+        services.AddSingleton<InitialData>();
 
         services.AddDbContextPool<DbContext, ApplicationDbContext>((provider, builder) =>
         {
@@ -38,7 +41,9 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>()
             .AddScoped(typeof(IRepositoryBase<,>), typeof(RepositoryBase<,>))
-            .AddScoped<IUserRepository, UserRepository>();
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IRoleRepository, RoleRepository>()
+            .AddScoped<ICourseRepository, CourseRepository>();
 
         return services;
     }

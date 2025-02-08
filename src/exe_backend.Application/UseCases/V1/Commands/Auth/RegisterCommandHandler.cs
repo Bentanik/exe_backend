@@ -1,3 +1,4 @@
+using exe_backend.Contract.Common.Enums;
 using exe_backend.Contract.DTOs.UserDTOs;
 using exe_backend.Contract.Services.Auth;
 
@@ -23,8 +24,13 @@ public sealed class RegisterCommandHandler
         var passwordHashed = passwordHashService.HashPassword(command.Password);
 
         // Create user and save Db
+
+        // Find Role
+        var roleMember = await unitOfWork.RoleRepository
+            .FindSingleAsync(r => r.Name == RoleEnum.Member.ToString());
+
         var userId = Guid.NewGuid();
-        var user = User.Create(userId, command.Email, passwordHashed, command.FullName, avatarDto.AvatarId, avatarDto.AvatarUrl);
+        var user = User.Create(userId, command.Email, passwordHashed, command.FullName, roleMember.Id, avatarDto.AvatarId, avatarDto.AvatarUrl);
 
         unitOfWork.UserRepository.Add(user);
         await unitOfWork.SaveChangesAsync(cancellationToken);

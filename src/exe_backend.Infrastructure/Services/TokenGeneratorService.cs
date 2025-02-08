@@ -27,11 +27,11 @@ public sealed class TokenGeneratorService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public string GenerateAccessToken(Guid userId, int roleName)
+    public string GenerateAccessToken(Guid userId, string roleName)
     {
         List<Claim> claims = [
             new Claim("UserId", userId.ToString()),
-            new Claim(ClaimTypes.Role, roleName.ToString())
+            new Claim(ClaimTypes.Role, roleName)
         ];
         if (_authSetting.AccessSecretToken != null && _authSetting.Issuer != null && _authSetting.Audience != null)
             return GenerateToken
@@ -44,11 +44,11 @@ public sealed class TokenGeneratorService
         return null!;
     }
 
-    public string GenerateRefreshToken(Guid userId, int roleName)
+    public string GenerateRefreshToken(Guid userId, string roleName)
     {
         List<Claim> claims = [
             new Claim("UserId", userId.ToString()),
-            new Claim(ClaimTypes.Role, roleName.ToString())
+            new Claim(ClaimTypes.Role, roleName)
         ];
         if (_authSetting.RefreshSecretToken != null && _authSetting.Issuer != null && _authSetting.Audience != null)
             return GenerateToken

@@ -49,15 +49,6 @@ builder.Services.AddInfrastructureServices();
 // CORS
 builder.Services.AddCors(options =>
 {
-    // options.AddPolicy("AllowSpecificOrigin",
-    //     option =>
-    //     {
-    //         option.WithOrigins("http://localhost")
-    //               .AllowAnyHeader()
-    //               .AllowAnyMethod()
-    //               .AllowCredentials();
-    //     });
-
     options.AddPolicy("AllowAll",
         policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
@@ -79,6 +70,9 @@ app.MapCarter();
 
 app.NewVersionedApi("Authentication")
     .MapAuthApiV1();
+
+app.NewVersionedApi("Course")
+    .MapCourseApiV1();
 
 app.UseHealthChecks("/health",
     new HealthCheckOptions
