@@ -6,5 +6,4 @@ public interface IMediaService
     Task<List<ImageDTO>> UploadImagesAsync(List<IFormFile> fileImages);
     Task<bool> DeleteFileAsync(string publicId);
     Task<VideoDTO?> UploadVideoAsync(string fileName, Stream fileStream);
-    Task<bool> Test();
 }

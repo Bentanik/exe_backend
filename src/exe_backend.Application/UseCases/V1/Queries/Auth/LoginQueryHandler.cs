@@ -5,9 +5,9 @@ namespace exe_backend.Application.UseCases.V1.Queries.Auth;
 
 public sealed class LoginQueryHandler
     (IUnitOfWork unitOfWork, IPasswordHashService passwordHashService, ITokenGeneratorService tokenGenenratorService)
-    : IQueryHandler<Query.LoginQuery, Success<Response.LoginResponse>>
+    : IQueryHandler<Query.LoginQuery, Success<Contract.Services.Auth.Response.LoginResponse>>
 {
-    public async Task<Result<Success<Response.LoginResponse>>> Handle(Query.LoginQuery query, CancellationToken cancellationToken)
+    public async Task<Result<Success<Contract.Services.Auth.Response.LoginResponse>>> Handle(Query.LoginQuery query, CancellationToken cancellationToken)
     {
         // Get user by email
         var user = await unitOfWork.UserRepository
@@ -34,12 +34,12 @@ public sealed class LoginQueryHandler
 
         var authUserDto = new AuthUserDTO(user.Email, user.FullName, user.PublicAvatarUrl);
 
-        //  Response
+        //  Contract.Service.Auth.Response
         var loginDto = new LoginDTO(authTokenDto, authUserDto);
 
-        var response = new Response.LoginResponse(loginDto);
+        var response = new Contract.Services.Auth.Response.LoginResponse(loginDto);
 
-        return Result.Success(new Success<Response.LoginResponse>
+        return Result.Success(new Success<Contract.Services.Auth.Response.LoginResponse>
         (AuthMessage.LoginSuccessfully.GetMessage().Code,
          AuthMessage.LoginSuccessfully.GetMessage().Message, response));
     }

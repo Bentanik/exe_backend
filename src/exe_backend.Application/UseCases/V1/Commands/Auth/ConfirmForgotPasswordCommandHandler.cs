@@ -24,7 +24,7 @@ public sealed class ConfirmForgotPasswordCommandHandler
 
         // Create event
         var userDto = new UserDto(Email: user.Email);
-        var userPasswordResetConfirmedEvent = new Event.UserPasswordResetConfirmedEvent(Guid.NewGuid(), userDto, forgotPasswordToken);
+        var userPasswordResetConfirmedEvent = new Contract.Services.Auth.Event.UserPasswordResetConfirmedEvent(Guid.NewGuid(), userDto, forgotPasswordToken);
 
         // Send event
         await publisher.Publish(userPasswordResetConfirmedEvent, cancellationToken);

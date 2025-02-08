@@ -24,7 +24,7 @@ public sealed class RegisterCommandHandler
         var passwordHashed = passwordHashService.HashPassword(command.Password);
 
         // Create user and save Db
-
+    
         // Find Role
         var roleMember = await unitOfWork.RoleRepository
             .FindSingleAsync(r => r.Name == RoleEnum.Member.ToString());
@@ -38,7 +38,7 @@ public sealed class RegisterCommandHandler
         // Send event when user registered
         var userDto = user.Adapt<UserDto>();
 
-        await publisher.Publish(new Event.UserRegisterdEvent(Guid.NewGuid(), userDto), cancellationToken);
+        await publisher.Publish(new Contract.Services.Auth.Event.UserRegisterdEvent(Guid.NewGuid(), userDto), cancellationToken);
 
         return Result.Success(new Success
         (AuthMessage.RegisterSuccessfully.GetMessage().Code,

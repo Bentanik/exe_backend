@@ -26,11 +26,6 @@ public sealed class MediaService : IMediaService
         return true;
     }
 
-    public async Task<bool> Test()
-    {
-        return true;
-    }
-
     public async Task<ImageDTO> UploadImageAsync(string fileName, Stream fileStream)
     {
         var uploadParams = new ImageUploadParams

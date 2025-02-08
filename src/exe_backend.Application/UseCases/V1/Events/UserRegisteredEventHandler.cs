@@ -1,37 +1,25 @@
 using exe_backend.Contract.DTOs.UserDTOs;
-using exe_backend.Contract.Services.Auth;
 
 namespace exe_backend.Application.UseCases.V1.Events;
 
 public sealed class UserRegisteredEventHandler
-    (ISchedulerFactory schedulerFactory)
-    : IDomainEventHandler<Event.UserRegisterdEvent>
+    (IPublishEndpoint publishEndpoint)
+    : IDomainEventHandler<Contract.Services.Auth.Event.UserRegisterdEvent>
 {
-    public async Task Handle(Event.UserRegisterdEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(Contract.Services.Auth.Event.UserRegisterdEvent notification, CancellationToken cancellationToken)
     {
         await SendNotificationAsync(notification.UserDto);
     }
 
     private async Task SendNotificationAsync(UserDto userDto)
     {
-        // Schedule to do the job
-        var scheduler = await schedulerFactory.GetScheduler();
-
-        if (!scheduler.IsStarted)
+        var newEvent = new UserRegistrationSuccessEvent
         {
-            await scheduler.Start();
-        }
+            User_Id = (Guid)userDto.Id!,
+            User_Email = userDto.Email!,
+            User_FullName = userDto.FullName!,
+        };
 
-        var job = JobBuilder.Create<UserRegisteredNotificationWorker>()
-            .WithIdentity($"UserRegisteredNotification_{userDto.Id}", "UserRegisteredNotification")
-            .UsingJobData(nameof(UserDto), JsonConvert.SerializeObject(userDto))
-            .Build();
-
-        var trigger = TriggerBuilder.Create()
-            .WithIdentity($"Trigger_UserRegisteredNotification_{userDto.Id}", "UserRegisteredNotificationWorker")
-            .StartNow()
-            .Build();
-
-        await scheduler.ScheduleJob(job, trigger);
+        await publishEndpoint.Publish(newEvent);
     }
 }

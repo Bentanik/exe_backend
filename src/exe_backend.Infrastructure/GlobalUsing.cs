@@ -14,3 +14,7 @@ global using Microsoft.Extensions.Options;
 global using Microsoft.AspNetCore.Http;
 global using CloudinaryDotNet;
 global using CloudinaryDotNet.Actions;
+global using MassTransit;
+global using MediatR;
+global using exe_backend.Contract.IntegrationEvents;
+global using Microsoft.Extensions.Logging;

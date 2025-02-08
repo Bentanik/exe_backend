@@ -1,3 +1,5 @@
+using System.Reflection;
+using exe_backend.Infrastructure.Masstransit;
 using exe_backend.Infrastructure.Services;
 using Notification.API.Infrastructure.Services;
 
@@ -19,13 +21,16 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IResponseCacheService, ResponseCacheService>();
     }
 
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddMessageBroker(configuration, Assembly.GetExecutingAssembly());
+
         services.AddScoped<IPasswordHashService, PasswordHashService>()
                 .AddScoped<IEmailService, EmailService>()
                 .AddScoped<ITokenGeneratorService, TokenGeneratorService>()
                 .AddScoped<IMediaService, MediaService>();
-                
+
         return services;
     }
 }
