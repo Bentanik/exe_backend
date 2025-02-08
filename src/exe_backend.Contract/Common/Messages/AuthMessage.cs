@@ -27,6 +27,12 @@ public enum AuthMessage
     UserBannedException,
 
     [Message("Thay đổi mật khẩu thành công", "auth09")]
-    ChangePasswordSuccessfully
+    ChangePasswordSuccessfully,
+
+    [Message("Refresh Token thành công", "auth10")]
+    RefreshTokenSuccessfully,
+
+    [Message("Hết thời gian đăng nhập, xin vui lòng đăng nhập lại", "auth11")]
+    LoginTokenExpiredException,
 }
 

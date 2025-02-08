@@ -43,4 +43,12 @@ public static class AuthException
                     AuthMessage.UserBannedException.GetMessage().Code)
         { }
     }
+
+    public sealed class LoginTokenExpiredException : AuthorizeException
+    {
+        public LoginTokenExpiredException()
+                : base(AuthMessage.LoginTokenExpiredException.GetMessage().Message,
+                    AuthMessage.LoginTokenExpiredException.GetMessage().Code)
+        { }
+    }
 }

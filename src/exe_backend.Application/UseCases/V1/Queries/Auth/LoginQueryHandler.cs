@@ -12,7 +12,8 @@ public sealed class LoginQueryHandler
         // Get user by email
         var user = await unitOfWork.UserRepository
             .FindSingleAsync(predicate: u => u.Email == query.Email,
-                            cancellationToken: cancellationToken);
+                            cancellationToken: cancellationToken,
+                            includeProperties: u => u.Role);
 
         // If user not exist
         if (user == null)
@@ -26,8 +27,8 @@ public sealed class LoginQueryHandler
             throw new AuthException.PasswordNotMatchException();
 
         // Genenrate token
-        var accessToken = tokenGenenratorService.GenerateAccessToken(user.Id, 1);
-        var refreshToken = tokenGenenratorService.GenerateRefreshToken(user.Id, 2);
+        var accessToken = tokenGenenratorService.GenerateAccessToken(user.Id, user.Role.Name);
+        var refreshToken = tokenGenenratorService.GenerateRefreshToken(user.Id, user.Role.Name);
 
         var authTokenDto = new AuthTokenDTO(accessToken, refreshToken, AuthConstant.BearerTokenScheme);
 

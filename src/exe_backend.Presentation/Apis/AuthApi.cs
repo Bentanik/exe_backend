@@ -15,11 +15,11 @@ public static class AuthApi
 
         group.MapPost("register", HandleRegisterAsync);
         group.MapPost("login", HandleLoginAsync);
+        group.MapPost("refresh-token", HandleRefreshTokenAsync);
         group.MapPost("confirm-forgot-password", HandleConfirmForgotPasswordAsync);
         group.MapPost("change-password", HandleChangePasswordAsync);
         return builder;
     }
-
 
     private static async Task<IResult> HandleRegisterAsync(ISender sender, [FromBody] Command.RegisterCommand request)
     {
@@ -33,6 +33,40 @@ public static class AuthApi
     private static async Task<IResult> HandleLoginAsync(ISender sender, [FromBody] Query.LoginQuery request, HttpContext httpContext, IOptions<AuthSetting> AuthSetting)
     {
         var result = await sender.Send(request);
+
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        var value = result.Value;
+
+        var refreshTokenExpMinute = AuthSetting.Value.RefreshTokenExpMinute;
+
+        httpContext.Response.Cookies.Append(AuthConstant.RefreshToken,
+            value.Data.LoginDto.AuthTokenDTO.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.Now.AddMinutes(refreshTokenExpMinute),
+            });
+
+        var loginDto = value.Data.LoginDto with
+        {
+            AuthTokenDTO = value.Data.LoginDto.AuthTokenDTO with
+            {
+                RefreshToken = null // Remove refresh token when return
+            }
+        };
+
+        return Results.Ok(loginDto);
+    }
+
+     private static async Task<IResult> HandleRefreshTokenAsync
+   (ISender sender, HttpContext httpContext, IOptions<AuthSetting> AuthSetting)
+    {
+        var refreshToken = httpContext.Request.Cookies[AuthConstant.RefreshToken];
+
+        var result = await sender.Send(new Query.RefreshTokenQuery(refreshToken));
 
         if (result.IsFailure)
             return HandlerFailure(result);
