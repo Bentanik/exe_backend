@@ -34,5 +34,8 @@ public enum AuthMessage
 
     [Message("Hết thời gian đăng nhập, xin vui lòng đăng nhập lại", "auth11")]
     LoginTokenExpiredException,
+
+    [Message("Đăng xuất thành công", "auth12")]
+    LogoutSuccessfully,
 }
 

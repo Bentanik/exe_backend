@@ -33,11 +33,19 @@ public sealed class MediaService : IMediaService
             File = new FileDescription(fileName, fileStream),
             Folder = _cloudinarySetting.Folder,
         };
-        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-        if (uploadResult?.StatusCode != System.Net.HttpStatusCode.OK) return null;
-        var imageUrl = uploadResult.Url.AbsoluteUri;
-        var imageId = uploadResult.PublicId;
-        return new ImageDTO(imageId, imageUrl);
+        try
+        {
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            if (uploadResult?.StatusCode != System.Net.HttpStatusCode.OK) return null;
+            var imageUrl = uploadResult.Url.AbsoluteUri;
+            var imageId = uploadResult.PublicId;
+            return new ImageDTO(imageId, imageUrl);
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine(ex.Message.ToString());
+            return null;
+        }
     }
 
     public async Task<List<ImageDTO>> UploadImagesAsync(List<IFormFile> fileImages)
@@ -83,7 +91,7 @@ public sealed class MediaService : IMediaService
         var videoId = uploadResult.PublicId;
         return new VideoDTO
         (
-            PublicVideoId:  videoId,
+            PublicVideoId: videoId,
             Duration: uploadResult.Duration
         );
     }

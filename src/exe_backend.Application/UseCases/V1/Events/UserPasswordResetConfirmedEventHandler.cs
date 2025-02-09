@@ -2,7 +2,7 @@ using exe_backend.Contract.DTOs.UserDTOs;
 
 namespace exe_backend.Application.UseCases.V1.Events;
 
-public sealed class UserPasswordResetConfirmedEvent
+public sealed class UserPasswordResetConfirmedEventHandler
     (IPublishEndpoint publishEndpoint)
     : IDomainEventHandler<Contract.Services.Auth.Event.UserPasswordResetConfirmedEvent>
 {

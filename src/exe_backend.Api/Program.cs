@@ -40,6 +40,9 @@ builder.Services.AddHealthChecks()
      .AddSqlServer(builder.Configuration.GetConnectionString("Database")!)
      .AddRedis(builder.Configuration.GetConnectionString("Redis")!);
 
+// Register Mapping config
+builder.Services.AddMappingConfig();
+
 // Register Persistence services
 builder.Services.AddPersistenceServices();
 

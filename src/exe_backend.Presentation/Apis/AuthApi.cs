@@ -1,4 +1,5 @@
 using exe_backend.Contract.Common.Constants;
+using exe_backend.Contract.Common.Messages;
 using exe_backend.Contract.Services.Auth;
 using exe_backend.Contract.Settings;
 using Microsoft.Extensions.Options;
@@ -18,6 +19,7 @@ public static class AuthApi
         group.MapPost("refresh-token", HandleRefreshTokenAsync);
         group.MapPost("confirm-forgot-password", HandleConfirmForgotPasswordAsync);
         group.MapPost("change-password", HandleChangePasswordAsync);
+        group.MapPost("logout", HandleLogout);
         return builder;
     }
 
@@ -61,8 +63,8 @@ public static class AuthApi
         return Results.Ok(loginDto);
     }
 
-     private static async Task<IResult> HandleRefreshTokenAsync
-   (ISender sender, HttpContext httpContext, IOptions<AuthSetting> AuthSetting)
+    private static async Task<IResult> HandleRefreshTokenAsync
+  (ISender sender, HttpContext httpContext, IOptions<AuthSetting> AuthSetting)
     {
         var refreshToken = httpContext.Request.Cookies[AuthConstant.RefreshToken];
 
@@ -111,6 +113,13 @@ public static class AuthApi
             return HandlerFailure(result);
 
         return Results.Ok(result);
+    }
+
+    private static IResult HandleLogout(HttpContext httpContext)
+    {
+        httpContext.Response.Cookies.Delete(AuthConstant.RefreshToken);
+        return Results.Ok(Result.Success(new Success(AuthMessage.LogoutSuccessfully.GetMessage().Code,
+            AuthMessage.LogoutSuccessfully.GetMessage().Message)));
     }
 
     private static IResult HandlerFailure(Result result) =>
