@@ -1,3 +1,4 @@
+using System.Diagnostics.Contracts;
 using exe_backend.Domain.ValueObjects;
 
 namespace exe_backend.Domain.Models;
@@ -20,5 +21,10 @@ public class Course : DomainEntity<Guid>
         };
 
         return course;
+    }
+
+    public void Update(Image? thumbnail = null)
+    {
+        if (thumbnail != null) Thumbnail = thumbnail;
     }
 }

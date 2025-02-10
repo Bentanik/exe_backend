@@ -1,9 +1,12 @@
+using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.Services.Course;
+using Microsoft.AspNetCore.Http;
+using static exe_backend.Contract.Services.Course.Event;
 
 namespace exe_backend.Application.UseCases.V1.Commands.Course;
 
 public sealed class CreateCourseCommandHandler
-    (IUnitOfWork unitOfWork)
+    (IUnitOfWork unitOfWork, IPublisher publisher)
     : ICommandHandler<Command.CreateCourseCommand>
 {
     public async Task<Result> Handle(Command.CreateCourseCommand command, CancellationToken cancellationToken)
@@ -22,6 +25,11 @@ public sealed class CreateCourseCommandHandler
         unitOfWork.CourseRepository.Add(course);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
+        // Send event
+        var courseDto = course.Adapt<CourseDTO>();
+        var createdCourseEvent = new CreatedCourseEvent(Guid.NewGuid(), courseDto, command.ThumbnailFile);
+        
+        await publisher.Publish(createdCourseEvent, cancellationToken);
         return Result.Success(new Success("sc", "Tạo khóa học thành công"));
     }
 

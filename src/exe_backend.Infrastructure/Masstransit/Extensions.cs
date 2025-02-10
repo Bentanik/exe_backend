@@ -1,5 +1,4 @@
 using System.Reflection;
-using MassTransit;
 
 namespace exe_backend.Infrastructure.Masstransit;
 

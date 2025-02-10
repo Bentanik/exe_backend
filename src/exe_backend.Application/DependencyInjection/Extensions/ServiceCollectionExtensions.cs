@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace exe_backend.Application.DependencyInjection.Extensions;
 
 public static class ServiceCollectionExtensions
@@ -8,4 +10,10 @@ public static class ServiceCollectionExtensions
            .AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>))
            .AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>))
            .AddValidatorsFromAssembly(Contract.AssemblyReference.Assembly, includeInternalTypes: true);
+
+    public static IServiceCollection AddMappingConfig(this IServiceCollection services)
+    {
+        TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
+        return services;
+    }
 }
