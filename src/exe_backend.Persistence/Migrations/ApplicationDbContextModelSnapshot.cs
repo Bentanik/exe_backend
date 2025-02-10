@@ -58,7 +58,7 @@ namespace exe_backend.Persistence.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Chapter");
+                    b.ToTable("Chapters");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Course", b =>
@@ -89,7 +89,7 @@ namespace exe_backend.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Course");
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Lecture", b =>
@@ -122,7 +122,7 @@ namespace exe_backend.Persistence.Migrations
 
                     b.HasIndex("ChapterId");
 
-                    b.ToTable("Lecture");
+                    b.ToTable("Lectures");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Role", b =>
@@ -223,7 +223,7 @@ namespace exe_backend.Persistence.Migrations
 
                             b1.HasKey("CourseId");
 
-                            b1.ToTable("Course");
+                            b1.ToTable("Courses");
 
                             b1.WithOwner()
                                 .HasForeignKey("CourseId");
@@ -255,7 +255,7 @@ namespace exe_backend.Persistence.Migrations
 
                             b1.HasKey("LectureId");
 
-                            b1.ToTable("Lecture");
+                            b1.ToTable("Lectures");
 
                             b1.WithOwner()
                                 .HasForeignKey("LectureId");
@@ -275,7 +275,7 @@ namespace exe_backend.Persistence.Migrations
 
                             b1.HasKey("LectureId");
 
-                            b1.ToTable("Lecture");
+                            b1.ToTable("Lectures");
 
                             b1.WithOwner()
                                 .HasForeignKey("LectureId");

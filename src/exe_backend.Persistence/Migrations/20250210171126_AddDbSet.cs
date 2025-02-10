@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace exe_backend.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class addchapter : Migration
+    public partial class AddDbSet : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Course",
+                name: "Courses",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -27,7 +27,7 @@ namespace exe_backend.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Course", x => x.Id);
+                    table.PrimaryKey("PK_Courses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -46,24 +46,26 @@ namespace exe_backend.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Chapter",
+                name: "Chapters",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    QuantityLectures = table.Column<int>(type: "int", nullable: false),
+                    TotalDurationLectures = table.Column<double>(type: "float", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Chapter", x => x.Id);
+                    table.PrimaryKey("PK_Chapters", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Chapter_Course_CourseId",
                         column: x => x.CourseId,
-                        principalTable: "Course",
+                        principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                 });
@@ -95,10 +97,42 @@ namespace exe_backend.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Lectures",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageLecture_PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageLecture_PublicUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VideoLecture_PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VideoLecture_Duration = table.Column<double>(type: "float", nullable: true),
+                    ChapterId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Lectures", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Lecture_Chapter_ChapterId",
+                        column: x => x.ChapterId,
+                        principalTable: "Chapters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Chapter_CourseId",
-                table: "Chapter",
+                name: "IX_Chapters_CourseId",
+                table: "Chapters",
                 column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Lectures_ChapterId",
+                table: "Lectures",
+                column: "ChapterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
@@ -110,16 +144,19 @@ namespace exe_backend.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Chapter");
+                name: "Lectures");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Course");
+                name: "Chapters");
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Courses");
         }
     }
 }

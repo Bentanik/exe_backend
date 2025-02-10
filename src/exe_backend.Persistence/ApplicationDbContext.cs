@@ -1,7 +1,7 @@
 namespace exe_backend.Persistence;
 
-public sealed class ApplicationDbContext
-    : DbContext
+public sealed class ApplicationDbContext :
+    DbContext
 {
     public ApplicationDbContext(DbContextOptions options) : base(options)
     { }
@@ -16,4 +16,7 @@ public sealed class ApplicationDbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
+    public DbSet<Course> Courses { get; set; }
+    public DbSet<Chapter> Chapters { get; set; }
+    public DbSet<Lecture> Lectures { get; set; }
 }

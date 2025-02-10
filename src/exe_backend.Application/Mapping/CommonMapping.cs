@@ -1,3 +1,4 @@
+using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.DTOs.MediaDTOs;
 using exe_backend.Domain.ValueObjects;
 
@@ -16,5 +17,6 @@ public class MappingConfig
         TypeAdapterConfig<Video, VideoDTO>.NewConfig()
             .Map(dest => dest.PublicId, src => src.PublicId)
             .Map(dest => dest.Duration, src => src.Duration);
+
     }
 }

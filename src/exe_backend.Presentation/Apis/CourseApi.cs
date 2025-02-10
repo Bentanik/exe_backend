@@ -1,3 +1,4 @@
+using exe_backend.Contract.Common.Enums;
 using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.Services.Course;
 
@@ -13,7 +14,7 @@ public static class CourseApi
         group.MapPost("create-course", HandleCreateCourseAsync);
         group.MapPost("create-chapter", HandleCreateChapterAsync);
         group.MapPost("create-lecture", HandleCreateLectureAsync);
-        
+        group.MapGet("get-courses", HandleGetCoursesAsync);
         return builder;
     }
 
@@ -70,6 +71,17 @@ public static class CourseApi
 
         var result = await sender.Send(request);
 
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleGetCoursesAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10)
+    {
+        var sort = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.Equals("Asc") ? SortOrder.Ascending : SortOrder.Descending : SortOrder.Descending;
+        
+        var result = await sender.Send(new Query.GetCoursesQuery(searchTerm, sortColumn, sort, pageIndex, pageSize));
         if (result.IsFailure)
             return HandlerFailure(result);
 

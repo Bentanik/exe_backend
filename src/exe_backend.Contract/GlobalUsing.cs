@@ -5,3 +5,6 @@ global using exe_backend.Contract.Abstractions.Message;
 global using System.Security.Claims;
 global using Microsoft.AspNetCore.Http;
 global using exe_backend.Contract.DTOs.MediaDTOs;
+global using exe_backend.Contract.Abstractions.Shared;
+global using exe_backend.Contract.Common.Enums;
+global using Microsoft.EntityFrameworkCore;

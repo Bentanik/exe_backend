@@ -12,8 +12,8 @@ using exe_backend.Persistence;
 namespace exe_backend.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250210033658_addchapter")]
-    partial class addchapter
+    [Migration("20250210171126_AddDbSet")]
+    partial class AddDbSet
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,11 +51,17 @@ namespace exe_backend.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("QuantityLectures")
+                        .HasColumnType("int");
+
+                    b.Property<double>("TotalDurationLectures")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Chapter");
+                    b.ToTable("Chapters");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Course", b =>
@@ -86,7 +92,40 @@ namespace exe_backend.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Course");
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("exe_backend.Domain.Models.Lecture", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ChapterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChapterId");
+
+                    b.ToTable("Lectures");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Role", b =>
@@ -187,13 +226,69 @@ namespace exe_backend.Persistence.Migrations
 
                             b1.HasKey("CourseId");
 
-                            b1.ToTable("Course");
+                            b1.ToTable("Courses");
 
                             b1.WithOwner()
                                 .HasForeignKey("CourseId");
                         });
 
                     b.Navigation("Thumbnail");
+                });
+
+            modelBuilder.Entity("exe_backend.Domain.Models.Lecture", b =>
+                {
+                    b.HasOne("exe_backend.Domain.Models.Chapter", "Chapter")
+                        .WithMany("Lectures")
+                        .HasForeignKey("ChapterId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Lecture_Chapter_ChapterId");
+
+                    b.OwnsOne("exe_backend.Domain.ValueObjects.Image", "ImageLecture", b1 =>
+                        {
+                            b1.Property<Guid>("LectureId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("PublicId")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("PublicUrl")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("LectureId");
+
+                            b1.ToTable("Lectures");
+
+                            b1.WithOwner()
+                                .HasForeignKey("LectureId");
+                        });
+
+                    b.OwnsOne("exe_backend.Domain.ValueObjects.Video", "VideoLecture", b1 =>
+                        {
+                            b1.Property<Guid>("LectureId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<double>("Duration")
+                                .HasColumnType("float");
+
+                            b1.Property<string>("PublicId")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("LectureId");
+
+                            b1.ToTable("Lectures");
+
+                            b1.WithOwner()
+                                .HasForeignKey("LectureId");
+                        });
+
+                    b.Navigation("Chapter");
+
+                    b.Navigation("ImageLecture");
+
+                    b.Navigation("VideoLecture");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.User", b =>
@@ -205,6 +300,11 @@ namespace exe_backend.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("exe_backend.Domain.Models.Chapter", b =>
+                {
+                    b.Navigation("Lectures");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Course", b =>
