@@ -1,3 +1,4 @@
+using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.Services.Course;
 
 namespace exe_backend.Presentation.Apis;
@@ -9,11 +10,14 @@ public static class CourseApi
     {
         var group = builder.MapGroup(BaseUrl).HasApiVersion(1);
 
-        group.MapPost("create-course", CreateCourseAsync);
+        group.MapPost("create-course", HandleCreateCourseAsync);
+        group.MapPost("create-chapter", HandleCreateChapterAsync);
+        group.MapPost("create-lecture", HandleCreateLectureAsync);
+        
         return builder;
     }
 
-    private static async Task<IResult> CreateCourseAsync(ISender sender, HttpContext context)
+    private static async Task<IResult> HandleCreateCourseAsync(ISender sender, HttpContext context)
     {
         if (!context.Request.HasFormContentType)
         {
@@ -26,6 +30,43 @@ public static class CourseApi
         var thumbnailFile = form.Files["ThumbnailFile"];
 
         var request = new Command.CreateCourseCommand(name, description, thumbnailFile);
+
+        var result = await sender.Send(request);
+
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleCreateChapterAsync(ISender sender, [FromBody] Command.CreateChapterCommand request)
+    {
+        var result = await sender.Send(request);
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleCreateLectureAsync(ISender sender, HttpContext context)
+    {
+        if (!context.Request.HasFormContentType)
+        {
+            return Results.BadRequest(new { Error = "Incorrect Content-Type. Expected 'multipart/form-data'." });
+        }
+        var form = await context.Request.ReadFormAsync();
+
+        var lectureDto = new LectureDTO
+        {
+            Name = form["Name"],
+            ChapterId = string.IsNullOrWhiteSpace(form["ChapterId"]) ? null : Guid.Parse(form["ChapterId"]),
+            Description = form["Description"]
+        };
+
+        var imageFile = form.Files["ImageFile"];
+        var videoFile = form.Files["VideoFile"];
+
+        var request = new Command.CreateLectureCommand(lectureDto, imageFile!, videoFile!);
 
         var result = await sender.Send(request);
 

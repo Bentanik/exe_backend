@@ -6,6 +6,7 @@ using exe_backend.Infrastructure.Masstransit;
 using exe_backend.Persistence.DepedencyInjection.Extensions;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +56,19 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll",
         policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
+
+// Configuration send file from form
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.ValueLengthLimit = 400 * 1024 * 1024; // 400MB
+    options.MultipartBodyLengthLimit = 400 * 1024 * 1024; // 400MB
+});
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 400 * 1024 * 1024; // 400MB
+});
+
 
 var app = builder.Build();
 

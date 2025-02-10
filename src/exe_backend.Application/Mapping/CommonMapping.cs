@@ -11,5 +11,10 @@ public class MappingConfig
         TypeAdapterConfig<Image, ImageDTO>.NewConfig()
             .Map(dest => dest.PublicId, src => src.PublicId)
             .Map(dest => dest.PublicUrl, src => src.PublicUrl);
+
+        // Map from Video to VideoDTO
+        TypeAdapterConfig<Video, VideoDTO>.NewConfig()
+            .Map(dest => dest.PublicId, src => src.PublicId)
+            .Map(dest => dest.Duration, src => src.Duration);
     }
 }

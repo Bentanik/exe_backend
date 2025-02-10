@@ -2,16 +2,16 @@ namespace exe_backend.Domain.ValueObjects;
 
 public record Video
 {
-   public Video(string id, double duration)
+   public Video(string publicId, double duration)
     {
-        Id = id;
+        PublicId = publicId;
         Duration = duration;
     }
 
-    public string Id { get; } // VideoId
+    public string PublicId { get; } // VideoId
     public double Duration { get; } // Duration a video
-    public static Video Of(string id, double duration)
+    public static Video Of(string publicId, double duration)
     {
-        return new Video(id, duration);
+        return new Video(publicId, duration);
     }
 }

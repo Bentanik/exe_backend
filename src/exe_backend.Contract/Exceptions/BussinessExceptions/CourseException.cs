@@ -11,4 +11,20 @@ public static class CourseException
             CourseMessage.CourseNameDuplicateException.GetMessage().Code)
         { }
     }
+
+    public sealed class CourseNotFoundException : NotFoundException
+    {
+        public CourseNotFoundException()
+            : base(CourseMessage.CourseNameDuplicateException.GetMessage().Message,
+            CourseMessage.CourseNameDuplicateException.GetMessage().Code)
+        { }
+    }
+
+     public sealed class ChapterNotFoundException : NotFoundException
+    {
+        public ChapterNotFoundException()
+            : base(CourseMessage.CourseNameDuplicateException.GetMessage().Message,
+            CourseMessage.CourseNameDuplicateException.GetMessage().Code)
+        { }
+    }
 }

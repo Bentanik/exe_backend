@@ -7,6 +7,9 @@ public class CourseConfiguration : IEntityTypeConfiguration<Domain.Models.Course
 {
     public void Configure(EntityTypeBuilder<Course> builder)
     {
+        // Configure Id
+        builder.HasKey(o => o.Id);
+
         // Configure Thumbnail
         builder.OwnsOne(
         o => o.Thumbnail, identityBuilder =>
@@ -17,5 +20,11 @@ public class CourseConfiguration : IEntityTypeConfiguration<Domain.Models.Course
             identityBuilder.Property(i => i.PublicUrl)
             .IsRequired();
         });
+
+        builder.HasMany(c => c.Chapters)
+               .WithOne(ch => ch.Course)
+               .HasForeignKey(ch => ch.CourseId)
+               .OnDelete(DeleteBehavior.SetNull)
+               .HasConstraintName("FK_Chapter_Course_CourseId");
     }
 }

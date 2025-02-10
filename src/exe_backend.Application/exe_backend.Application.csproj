@@ -7,13 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\exe_backend.Contract\exe_backend.Contract.csproj" />
     <ProjectReference Include="..\exe_backend.Domain\exe_backend.Domain.csproj" />
-    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.1" />
   </ItemGroup>
 
 </Project>

@@ -12,8 +12,8 @@ using exe_backend.Persistence;
 namespace exe_backend.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250208072004_IntialData1")]
-    partial class IntialData1
+    [Migration("20250210033658_addchapter")]
+    partial class addchapter
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,39 @@ namespace exe_backend.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("exe_backend.Domain.Models.Chapter", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("Chapter");
+                });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Course", b =>
                 {
@@ -47,6 +80,9 @@ namespace exe_backend.Persistence.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("QuantityChapters")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -123,6 +159,17 @@ namespace exe_backend.Persistence.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("exe_backend.Domain.Models.Chapter", b =>
+                {
+                    b.HasOne("exe_backend.Domain.Models.Course", "Course")
+                        .WithMany("Chapters")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Chapter_Course_CourseId");
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("exe_backend.Domain.Models.Course", b =>
                 {
                     b.OwnsOne("exe_backend.Domain.ValueObjects.Image", "Thumbnail", b1 =>
@@ -158,6 +205,11 @@ namespace exe_backend.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("exe_backend.Domain.Models.Course", b =>
+                {
+                    b.Navigation("Chapters");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Role", b =>

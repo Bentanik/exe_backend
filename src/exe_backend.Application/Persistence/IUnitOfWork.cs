@@ -8,4 +8,6 @@ public interface IUnitOfWork : IAsyncDisposable
     IUserRepository UserRepository { get; }
     IRoleRepository RoleRepository { get; }
     ICourseRepository CourseRepository { get; }
+    IChapterRepository ChapterRepository { get; }
+    ILectureRepository LectureRepository { get; }
 }
