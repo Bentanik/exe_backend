@@ -15,6 +15,10 @@ public static class CourseApi
         group.MapPost("create-chapter", HandleCreateChapterAsync);
         group.MapPost("create-lecture", HandleCreateLectureAsync);
         group.MapGet("get-courses", HandleGetCoursesAsync);
+        group.MapGet("get-course-by-id", HandleGetCourseByIdAsync);
+        group.MapGet("get-chapters", HandleGetChaptersAsync);
+        group.MapGet("get-chapter-by-id", HandleGetChapterByIdAsync);
+        group.MapGet("get-lectures", HandleGetLecturesAsync);
         return builder;
     }
 
@@ -80,8 +84,68 @@ public static class CourseApi
     private static async Task<IResult> HandleGetCoursesAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null)
     {
         var sort = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.Equals("Asc") ? SortOrder.Ascending : SortOrder.Descending : SortOrder.Descending;
-        
+
         var result = await sender.Send(new Query.GetCoursesQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize));
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleGetCourseByIdAsync(ISender sender, [FromQuery] string courseId, [FromQuery] string[]? includes = null)
+    {
+        Guid? courseIdParsed = null;
+        if (!string.IsNullOrEmpty(courseId))
+        {
+            if (!Guid.TryParse(courseId, out var parsedId))
+            {
+                return Results.BadRequest("Invalid course ID format.");
+            }
+            courseIdParsed = parsedId;
+        }
+
+        var result = await sender.Send(new Query.GetCourseByIdQuery(courseIdParsed, includes));
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleGetChaptersAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null)
+    {
+        var sort = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.Equals("Asc") ? SortOrder.Ascending : SortOrder.Descending : SortOrder.Descending;
+
+        var result = await sender.Send(new Query.GetChaptersQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize));
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleGetChapterByIdAsync(ISender sender, [FromQuery] string chapterId, [FromQuery] string[]? includes = null)
+    {
+        Guid? chapterIdParsed = null;
+        if (!string.IsNullOrEmpty(chapterId))
+        {
+            if (!Guid.TryParse(chapterId, out var parsedId))
+            {
+                return Results.BadRequest("Invalid course ID format.");
+            }
+            chapterIdParsed = parsedId;
+        }
+
+        var result = await sender.Send(new Query.GetChapterByIdQuery(chapterIdParsed, includes));
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleGetLecturesAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null)
+    {
+        var sort = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.Equals("Asc") ? SortOrder.Ascending : SortOrder.Descending : SortOrder.Descending;
+
+        var result = await sender.Send(new Query.GetLecturesQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize));
         if (result.IsFailure)
             return HandlerFailure(result);
 

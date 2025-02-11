@@ -1,4 +1,3 @@
-using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.DTOs.MediaDTOs;
 using exe_backend.Domain.ValueObjects;
 

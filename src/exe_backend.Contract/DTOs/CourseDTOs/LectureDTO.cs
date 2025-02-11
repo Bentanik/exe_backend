@@ -6,6 +6,6 @@ public record LectureDTO
     Guid? ChapterId = null,
     string? Name = null,
     string? Description = null,
-    ImageDTO? Image = null,
-    VideoDTO? Video = null
+    ImageDTO? ImageLecture = null,
+    VideoDTO? VideoLecture = null
 );

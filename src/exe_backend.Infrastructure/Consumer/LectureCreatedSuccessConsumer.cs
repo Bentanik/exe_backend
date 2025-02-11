@@ -27,8 +27,8 @@ public class LectureCreatedSuccessConsumer
             // LectureDTO
             var lectureDto = lectureCreatedSuccessEvent.LectureDTO with
             {
-                Image = imageDto,
-                Video = videoDto
+                ImageLecture = imageDto,
+                VideoLecture = videoDto
             };
 
             await sender.Send(new Command.SaveImageAndVideoLectureCommand(lectureDto));

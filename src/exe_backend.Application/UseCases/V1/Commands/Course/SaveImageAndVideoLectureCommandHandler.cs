@@ -11,9 +11,9 @@ public sealed class SaveImageAndVideoLectureCommandHandler
     {
         var lecture = await unitOfWork.LectureRepository.FindSingleAsync(c => c.Id == command.LectureDTO.Id);
 
-        var imageLecture = Image.Of(command.LectureDTO.Image!.PublicId!, command.LectureDTO.Image.PublicUrl!);
+        var imageLecture = Image.Of(command.LectureDTO.ImageLecture!.PublicId!, command.LectureDTO.ImageLecture.PublicUrl!);
 
-        var videoLecture = Video.Of(command.LectureDTO.Video!.PublicId!, (double)command.LectureDTO.Video.Duration!);
+        var videoLecture = Video.Of(command.LectureDTO.VideoLecture!.PublicId!, (double)command.LectureDTO.VideoLecture.Duration!);
 
         lecture.Update(imageLecture: imageLecture, videoLecture: videoLecture);
         
