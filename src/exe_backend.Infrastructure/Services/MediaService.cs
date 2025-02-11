@@ -91,7 +91,7 @@ public sealed class MediaService : IMediaService
         var videoId = uploadResult.PublicId;
         return new VideoDTO
         (
-            PublicVideoId: videoId,
+            PublicId: videoId,
             Duration: uploadResult.Duration
         );
     }

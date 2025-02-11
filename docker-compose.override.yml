@@ -17,6 +17,19 @@ services:
     restart: always
     ports:
       - "6379:6379"
+
+  messagebroker:
+    env_file:
+      - .env
+    container_name: messagebroker
+    hostname: exe02-mq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     
   exe_backend.api:
     env_file:
@@ -27,6 +40,9 @@ services:
       - ASPNETCORE_HTTPS_PORTS=${ASPNETCORE_HTTPS_PORTS}
       - ConnectionStrings__Redis=distributedcache:6379
       - ConnectionStrings__Database=Server=exedb;Database=exedb;User Id=sa;Password=${SA_PASSWORD};Encrypt=False;TrustServerCertificate=True
+      - MessageBroker__Host=amqp://exe02-mq:5672
+      - MessageBroker__UserName=${RABBITMQ_DEFAULT_USER}
+      - MessageBroker__Password=${RABBITMQ_DEFAULT_PASS}
       - AuthConfiguration__AccessSecretToken=${ACCESS_SECRET_TOKEN}
       - AuthConfiguration__AccessTokenExpMinute=${ACCESS_TOKEN_EXP_MINUTE}
       - AuthConfiguration__Audience=${AUDIENCE}
@@ -41,6 +57,7 @@ services:
       - UserConfiguration__Avatar__AvatarId=${USER_AVATAR_ID}
     depends_on:
       - exedb
+      - messagebroker
       - distributedcache
     ports:
       - "6000:${ASPNETCORE_HTTP_PORTS}"

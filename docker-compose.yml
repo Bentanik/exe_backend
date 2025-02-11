@@ -1,7 +1,10 @@
 services:
   exedb:
     image: mcr.microsoft.com/mssql/server
-
+  
+  messagebroker:
+    image: rabbitmq:management
+  
   distributedcache:
     image: redis
 
@@ -10,5 +13,6 @@ services:
     build:
       context: .
       dockerfile: src/exe_backend.Api/Dockerfile
+
 volumes:
   sqlserver_exedb:

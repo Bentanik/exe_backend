@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy ASP.Net Core app to Azure Web App - exewebapi
 
 on:
@@ -10,33 +13,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read # This is required for actions/checkout
+      contents: read #This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
-
-      # Kiểm tra thư mục làm việc hiện tại
-      - name: Print current directory
-        run: pwd
-
-      # Liệt kê các tệp và thư mục để kiểm tra tệp .sln
-      - name: List files to check structure
-        run: ls -R
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
 
-      # Xác minh lại đường dẫn đến solution file và build solution
       - name: Build with dotnet
-        run: dotnet build src/exe_backend.Api/exe_backend.Api.sln --configuration Release
+        run: dotnet build --configuration Release
 
-      # Publish ứng dụng
       - name: dotnet publish
-        run: dotnet publish src/exe_backend.Api/exe_backend.Api.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
-      # Upload artifact cho bước deploy
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -49,13 +41,13 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
+    
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-
+      
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3

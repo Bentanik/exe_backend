@@ -30,7 +30,8 @@ public sealed class CreateCourseCommandHandler
         var createdCourseEvent = new CreatedCourseEvent(Guid.NewGuid(), courseDto, command.ThumbnailFile);
         
         await publisher.Publish(createdCourseEvent, cancellationToken);
-        return Result.Success(new Success("sc", "Tạo khóa học thành công"));
+        
+        return Result.Success(new Success(CourseMessage.SaveCourseSuccessfully.GetMessage().Code, CourseMessage.SaveCourseSuccessfully.GetMessage().Message));
     }
 
     private static Domain.Models.Course MapToCourse(Command.CreateCourseCommand createCourseCommand)
