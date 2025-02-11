@@ -10,9 +10,18 @@ public sealed class GetCoursesQueryHandler
 {
     public async Task<Result<Success<Contract.Services.Course.Response.CoursesResponse>>> Handle(Query.GetCoursesQuery query, CancellationToken cancellationToken)
     {
+        var includes = query.IncludesProperty?.Select(include =>
+        {
+            return include switch
+            {
+                "Chapter" => (Expression<Func<Domain.Models.Course, object>>)(c => c.Chapters),
+                _ => throw new ArgumentException($"Unknown navigation property: {include}")
+            };
+        }).ToArray();
+
         //Find sort property without Id
         var coursesQuery = string.IsNullOrWhiteSpace(query.SearchTerm)
-            ? unitOfWork.CourseRepository.FindAll() : unitOfWork.CourseRepository.FindAll(x => x.Name.Contains(query.SearchTerm));
+            ? unitOfWork.CourseRepository.FindAll(includeProperties: includes) : unitOfWork.CourseRepository.FindAll(x => x.Name.Contains(query.SearchTerm), includeProperties: includes);
 
         // Get sort follow property
         Expression<Func<Domain.Models.Course, object>> keySelector = query.SortColumn?.ToLower() switch
@@ -32,6 +41,6 @@ public sealed class GetCoursesQueryHandler
 
         var response = new Contract.Services.Course.Response.CoursesResponse(pagedResultCourseDto);
 
-        return Result.Success(new Success<Contract.Services.Course.Response.CoursesResponse>("", "", response));
+        return Result.Success(new Success<Contract.Services.Course.Response.CoursesResponse>(CourseMessage.GetCourseSuccessfully.GetMessage().Code, CourseMessage.GetCourseSuccessfully.GetMessage().Message, response));
     }
 }

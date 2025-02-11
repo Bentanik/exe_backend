@@ -14,6 +14,9 @@ public enum CourseMessage
     [Message("Khóa học không tìm thấy", "course04")]
     CourseNotFoundException,
 
+    [Message("Đã lấy thông tin khóa học thành công", "course05")]
+    GetCourseSuccessfully,
+
     [Message("Đã lưu chương học thành công", "chapter01")]
     CreateChapterSuccessfully,
 
@@ -24,5 +27,5 @@ public enum CourseMessage
     SaveLectureSuccessfully,
 
     [Message("Đã lưu ảnh và video của bài học thành công", "lecture02")]
-    SaveImageAndVideoLectureSuccessfully
+    SaveImageAndVideoLectureSuccessfully,
 }

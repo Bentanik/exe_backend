@@ -26,5 +26,7 @@ public class CourseConfiguration : IEntityTypeConfiguration<Domain.Models.Course
                .HasForeignKey(ch => ch.CourseId)
                .OnDelete(DeleteBehavior.SetNull)
                .HasConstraintName("FK_Chapter_Course_CourseId");
+
+        builder.Property(c => c.QuantityChapters);
     }
 }
