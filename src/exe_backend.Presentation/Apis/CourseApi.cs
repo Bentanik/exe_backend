@@ -33,8 +33,11 @@ public static class CourseApi
         var name = form["Name"];
         var description = form["Description"];
         var thumbnailFile = form.Files["ThumbnailFile"];
+        var categoryId = form["CategoryId"];
 
-        var request = new Command.CreateCourseCommand(name, description, thumbnailFile);
+        _ = Guid.TryParse(categoryId, out Guid categoryIdParsed);
+
+        var request = new Command.CreateCourseCommand(name, description, thumbnailFile, categoryIdParsed);
 
         var result = await sender.Send(request);
 

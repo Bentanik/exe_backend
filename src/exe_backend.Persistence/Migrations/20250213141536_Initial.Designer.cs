@@ -12,8 +12,8 @@ using exe_backend.Persistence;
 namespace exe_backend.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250210171126_AddDbSet")]
-    partial class AddDbSet
+    [Migration("20250213141536_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,33 @@ namespace exe_backend.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("exe_backend.Domain.Models.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("QuantityCourses")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Category");
+                });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Chapter", b =>
                 {
@@ -70,6 +97,9 @@ namespace exe_backend.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -91,6 +121,8 @@ namespace exe_backend.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Courses");
                 });
@@ -211,6 +243,12 @@ namespace exe_backend.Persistence.Migrations
 
             modelBuilder.Entity("exe_backend.Domain.Models.Course", b =>
                 {
+                    b.HasOne("exe_backend.Domain.Models.Category", "Category")
+                        .WithMany("Courses")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Category_Course_CourseId");
+
                     b.OwnsOne("exe_backend.Domain.ValueObjects.Image", "Thumbnail", b1 =>
                         {
                             b1.Property<Guid>("CourseId")
@@ -231,6 +269,8 @@ namespace exe_backend.Persistence.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("CourseId");
                         });
+
+                    b.Navigation("Category");
 
                     b.Navigation("Thumbnail");
                 });
@@ -300,6 +340,11 @@ namespace exe_backend.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("exe_backend.Domain.Models.Category", b =>
+                {
+                    b.Navigation("Courses");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Chapter", b =>

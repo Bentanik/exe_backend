@@ -91,6 +91,9 @@ app.NewVersionedApi("Authentication")
 app.NewVersionedApi("Course")
     .MapCourseApiV1();
 
+app.NewVersionedApi("Category")
+    .MapCategoryApiV1();
+
 app.UseHealthChecks("/health",
     new HealthCheckOptions
     {

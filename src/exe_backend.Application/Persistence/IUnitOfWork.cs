@@ -10,4 +10,5 @@ public interface IUnitOfWork : IAsyncDisposable
     ICourseRepository CourseRepository { get; }
     IChapterRepository ChapterRepository { get; }
     ILectureRepository LectureRepository { get; }
+    ICategoryRepository CategoryRepository { get; }
 }

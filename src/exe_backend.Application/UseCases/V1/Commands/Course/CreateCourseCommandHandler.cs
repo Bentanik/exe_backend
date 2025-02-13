@@ -1,6 +1,5 @@
 using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.Services.Course;
-using Microsoft.AspNetCore.Http;
 using static exe_backend.Contract.Services.Course.Event;
 
 namespace exe_backend.Application.UseCases.V1.Commands.Course;
@@ -20,7 +19,19 @@ public sealed class CreateCourseCommandHandler
 
         // Create course
         var course = MapToCourse(command);
-        
+        // Validation with case create course have category andc category must type Guid
+        if (command.CategoryId != null && command.CategoryId != Guid.Empty)
+        {
+            var category = await unitOfWork.CategoryRepository
+                .FindSingleAsync(ct => ct.Id == command.CategoryId);
+
+            // Found category, the course will be assigned to that
+            if (category != null)
+            {
+                course.AssignCategory(category);
+            }            
+        }
+
         // Save database
         unitOfWork.CourseRepository.Add(course);
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -28,9 +39,9 @@ public sealed class CreateCourseCommandHandler
         // Send event
         var courseDto = course.Adapt<CourseDTO>();
         var createdCourseEvent = new CreatedCourseEvent(Guid.NewGuid(), courseDto, command.ThumbnailFile);
-        
+
         await publisher.Publish(createdCourseEvent, cancellationToken);
-        
+
         return Result.Success(new Success(CourseMessage.SaveCourseSuccessfully.GetMessage().Code, CourseMessage.SaveCourseSuccessfully.GetMessage().Message));
     }
 
