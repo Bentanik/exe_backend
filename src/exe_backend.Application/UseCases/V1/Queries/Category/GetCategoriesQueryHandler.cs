@@ -3,7 +3,7 @@ using exe_backend.Contract.Services.Category;
 
 namespace exe_backend.Application.UseCases.V1.Queries.Category;
 
-public sealed class CategoryQueryHandler
+public sealed class GetCategoriesQueryHandler
     (IUnitOfWork unitOfWork)
     : IQueryHandler<Query.GetCategoriesQuery, Success<Contract.Services.Category.Response.CategoriesResponse>>
 {
@@ -40,6 +40,6 @@ public sealed class CategoryQueryHandler
 
         var response = new Contract.Services.Category.Response.CategoriesResponse(pagedResultCategoryDto);
 
-        return Result.Success(new Success<Contract.Services.Category.Response.CategoriesResponse>(CourseMessage.GetCourseSuccessfully.GetMessage().Code, CourseMessage.GetCourseSuccessfully.GetMessage().Message, response));
+        return Result.Success(new Success<Contract.Services.Category.Response.CategoriesResponse>(CategoryMessage.GetCategorySuccessfully.GetMessage().Code, CategoryMessage.GetCategorySuccessfully.GetMessage().Message, response));
     }
 }

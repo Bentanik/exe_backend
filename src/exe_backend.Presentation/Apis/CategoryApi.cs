@@ -12,6 +12,7 @@ public static class CategoryApi
 
         group.MapPost("create-category", HandleCreateCategoryAsync);
         group.MapGet("get-categories", HandleGetCategoriesAsync);
+        group.MapGet("get-category-by-id", HandleGetCategoryByIdAsync);
         return builder;
     }
 
@@ -29,6 +30,25 @@ public static class CategoryApi
         var sort = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.Equals("Asc") ? SortOrder.Ascending : SortOrder.Descending : SortOrder.Descending;
 
         var result = await sender.Send(new Query.GetCategoriesQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize));
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleGetCategoryByIdAsync(ISender sender, [FromQuery] string categoryId, [FromQuery] string[]? includes = null)
+    {
+        Guid? categoryIdParsed = null;
+        if (!string.IsNullOrEmpty(categoryId))
+        {
+            if (!Guid.TryParse(categoryId, out var parsedId))
+            {
+                return Results.BadRequest("Invalid category ID format.");
+            }
+            categoryIdParsed = parsedId;
+        }
+
+        var result = await sender.Send(new Query.GetCategoryByIdQuery(categoryIdParsed, includes));
         if (result.IsFailure)
             return HandlerFailure(result);
 
