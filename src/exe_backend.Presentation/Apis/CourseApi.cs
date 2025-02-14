@@ -1,5 +1,8 @@
+using System.Security.Claims;
+using exe_backend.Contract.Common.Constants;
 using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.Services.Course;
+using Microsoft.Identity.Client;
 
 namespace exe_backend.Presentation.Apis;
 
@@ -10,23 +13,35 @@ public static class CourseApi
     {
         var group = builder.MapGroup(BaseUrl).HasApiVersion(1);
 
+        // Role Admin
         group.MapPost("create-course", HandleCreateCourseAsync).RequireAuthorization(RoleEnum.Admin.ToString());
+
         group.MapPost("create-chapter", HandleCreateChapterAsync)
         .RequireAuthorization(RoleEnum.Admin.ToString());
+
         group.MapPost("create-lecture", HandleCreateLectureAsync)
         .RequireAuthorization(RoleEnum.Admin.ToString());
+
         group.MapGet("get-courses", HandleGetCoursesAsync)
         .RequireAuthorization(RoleEnum.Admin.ToString());
+
         group.MapGet("get-course-by-id", HandleGetCourseByIdAsync)
         .RequireAuthorization(RoleEnum.Admin.ToString());
+
         group.MapGet("get-chapters", HandleGetChaptersAsync)
         .RequireAuthorization(RoleEnum.Admin.ToString());
+
         group.MapGet("get-chapter-by-id", HandleGetChapterByIdAsync)
         .RequireAuthorization(RoleEnum.Admin.ToString());
+
         group.MapGet("get-lectures", HandleGetLecturesAsync)
         .RequireAuthorization(RoleEnum.Admin.ToString());
+
         group.MapGet("get-lecture-by-id", HandleGetLectureByIdAsync)
         .RequireAuthorization(RoleEnum.Admin.ToString());
+
+        // Role User
+        
         return builder;
     }
 
@@ -106,7 +121,8 @@ public static class CourseApi
         return Results.Ok(result);
     }
 
-    private static async Task<IResult> HandleGetCourseByIdAsync(ISender sender, [FromQuery] string courseId, [FromQuery] string[]? includes = null)
+    private static async Task<IResult> HandleGetCourseByIdAsync(ISender sender,
+    HttpContext context, [FromQuery] string courseId, [FromQuery] string[]? includes = null)
     {
         Guid? courseIdParsed = null;
         if (!string.IsNullOrEmpty(courseId))
@@ -118,7 +134,9 @@ public static class CourseApi
             courseIdParsed = parsedId;
         }
 
-        var result = await sender.Send(new Query.GetCourseByIdQuery(courseIdParsed, includes));
+        _ = Guid.TryParse(context.User.FindFirstValue(AuthConstant.UserId), out Guid userId );
+
+        var result = await sender.Send(new Query.GetCourseByIdQuery(courseIdParsed, includes, userId == Guid.Empty ? null : userId));
         if (result.IsFailure)
             return HandlerFailure(result);
 
