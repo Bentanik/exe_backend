@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace exe_backend.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class IntialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,6 +25,22 @@ namespace exe_backend.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Category", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Level",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    QuantityCourses = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Level", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,6 +68,7 @@ namespace exe_backend.Persistence.Migrations
                     Thumbnail_PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Thumbnail_PublicUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LevelId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     QuantityChapters = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -64,6 +81,12 @@ namespace exe_backend.Persistence.Migrations
                         name: "FK_Category_Course_CourseId",
                         column: x => x.CategoryId,
                         principalTable: "Category",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Level_Course_CourseId",
+                        column: x => x.LevelId,
+                        principalTable: "Level",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                 });
@@ -79,6 +102,7 @@ namespace exe_backend.Persistence.Migrations
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     PublicAvatarId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PublicAvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SubscriptionType = table.Column<int>(type: "int", nullable: false),
                     RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -158,6 +182,11 @@ namespace exe_backend.Persistence.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Courses_LevelId",
+                table: "Courses",
+                column: "LevelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Lectures_ChapterId",
                 table: "Lectures",
                 column: "ChapterId");
@@ -188,6 +217,9 @@ namespace exe_backend.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Category");
+
+            migrationBuilder.DropTable(
+                name: "Level");
         }
     }
 }

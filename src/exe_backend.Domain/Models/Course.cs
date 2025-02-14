@@ -13,6 +13,10 @@ public class Course : DomainEntity<Guid>
     [JsonIgnore]
     public Category? Category { get; set; }
 
+    public Guid? LevelId { get; private set; }
+    [JsonIgnore]
+    public Level? Level { get; set; }
+
     [JsonIgnore]
     public ICollection<Chapter> Chapters { get; set; } = [];
     public int QuantityChapters
@@ -43,5 +47,10 @@ public class Course : DomainEntity<Guid>
     public void AssignCategory(Category category)
     {
         Category = category;
+    }
+
+    public void AssignLevel(Level level)
+    {
+        Level = level;
     }
 }

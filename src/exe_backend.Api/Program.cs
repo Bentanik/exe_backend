@@ -1,8 +1,5 @@
-using System.Reflection;
-using CloudinaryDotNet;
 using exe_backend.Api.DepedencyInjection.Extensions;
 using exe_backend.Infrastructure.DepedencyInjection.Extensions;
-using exe_backend.Infrastructure.Masstransit;
 using exe_backend.Persistence.DepedencyInjection.Extensions;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -23,6 +20,9 @@ builder.Services
 
 // Configure appsettings
 builder.Services.AddConfigurationAppSetting(builder.Configuration);
+
+// Configure Auth
+builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
 
 // Register MediatR
 builder.Services.AddConfigureMediatR();
@@ -75,11 +75,14 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    // Seed database
+    await app.InitialiseDatabaseAsync(builder.Configuration, builder.Services.BuildServiceProvider());
 }
-// Seed database
-await app.InitialiseDatabaseAsync();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapGet("/", () => "Hello World!");
 
@@ -93,6 +96,9 @@ app.NewVersionedApi("Course")
 
 app.NewVersionedApi("Category")
     .MapCategoryApiV1();
+
+app.NewVersionedApi("Level")
+    .MapLevelApiV1();
 
 app.UseHealthChecks("/health",
     new HealthCheckOptions

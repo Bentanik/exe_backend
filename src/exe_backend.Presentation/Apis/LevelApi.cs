@@ -1,3 +1,5 @@
+using exe_backend.Contract.Services.Level;
+
 namespace exe_backend.Presentation.Apis;
 
 public static class LevelApi
@@ -8,19 +10,50 @@ public static class LevelApi
     {
         var group = builder.MapGroup(BaseUrl).HasApiVersion(1);
 
-        // group.MapPost("create-level", HandleLevelAsync);
+        group.MapPost("create-level", HandleCreateLevelAsync);
+        group.MapGet("get-levels", HandleGetLevelsAsync);
+        group.MapGet("get-level-by-id", HandleGetLevelByIdAsync);
         return builder;
     }
 
-    // private static async Task<IResult> HandleLevelAsync(ISender sender, [FromBody] Command.RegisterCommand request)
-    // {
-    //     var result = await sender.Send(request);
-    //     if (result.IsFailure)
-    //         return HandlerFailure(result);
+    private static async Task<IResult> HandleCreateLevelAsync(ISender sender, [FromBody] Command.CreateLevelCommand request)
+    {
+        var result = await sender.Send(request);
+        if (result.IsFailure)
+            return HandlerFailure(result);
 
-    //     return Results.Ok(result);
-    // }
+        return Results.Ok(result);
+    }
 
+    private static async Task<IResult> HandleGetLevelsAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null)
+    {
+        var sort = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.Equals("Asc") ? SortOrder.Ascending : SortOrder.Descending : SortOrder.Descending;
+
+        var result = await sender.Send(new Query.GetLevelsQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize));
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleGetLevelByIdAsync(ISender sender, [FromQuery] string levelId, [FromQuery] string[]? includes = null)
+    {
+        Guid? levelIdParsed = null;
+        if (!string.IsNullOrEmpty(levelId))
+        {
+            if (!Guid.TryParse(levelId, out var parsedId))
+            {
+                return Results.BadRequest("Invalid level ID format.");
+            }
+            levelIdParsed = parsedId;
+        }
+
+        var result = await sender.Send(new Query.GetLevelByIdQuery(levelIdParsed, includes));
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
 
     private static IResult HandlerFailure(Result result) =>
          result switch

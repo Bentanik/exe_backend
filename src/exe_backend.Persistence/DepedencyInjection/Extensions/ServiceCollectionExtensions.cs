@@ -46,7 +46,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<ICourseRepository, CourseRepository>()
             .AddScoped<IChapterRepository, ChapterRepository>()
             .AddScoped<ILectureRepository, LectureRepository>()
-            .AddScoped<ICategoryRepository, CategoryRepository>();
+            .AddScoped<ICategoryRepository, CategoryRepository>()
+            .AddScoped<ILevelRepository, LevelRepository>();
 
         return services;
     }

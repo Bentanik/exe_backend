@@ -1,4 +1,5 @@
 using exe_backend.Contract.Common.Enums;
+using exe_backend.Contract.Settings;
 
 namespace exe_backend.Persistence.DepedencyInjection.Options;
 

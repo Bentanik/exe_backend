@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using exe_backend.Persistence;
 
@@ -11,9 +12,11 @@ using exe_backend.Persistence;
 namespace exe_backend.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250214142344_IntialCreate")]
+    partial class IntialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -252,6 +255,9 @@ namespace exe_backend.Persistence.Migrations
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("SubscriptionType")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RoleId");
@@ -376,32 +382,7 @@ namespace exe_backend.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("exe_backend.Domain.ValueObjects.UserSubscription", "UserSubcription", b1 =>
-                        {
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<DateTime>("EndDate")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime>("StartDate")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<int>("Type")
-                                .HasColumnType("int");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("Users");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
                     b.Navigation("Role");
-
-                    b.Navigation("UserSubcription")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Category", b =>

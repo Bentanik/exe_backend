@@ -23,7 +23,7 @@ public enum CourseMessage
     [Message("Chương học không tìm thấy", "chapter02")]
     ChapterNotFoundException,
 
-    [Message("Đã lấy chương học thành công", "lecture03")]
+    [Message("Đã lấy chương học thành công", "chapter03")]
     GetChapterSuccessfully,
 
     [Message("Lưu thông tin chương học thành công, đang lưu ảnh và video", "lecture01")]
@@ -32,5 +32,7 @@ public enum CourseMessage
     [Message("Đã lưu ảnh và video của bài học thành công", "lecture02")]
     SaveImageAndVideoLectureSuccessfully,
 
-    
+    [Message("Đã lấy bài học thành công", "lecture03")]
+    GetLectureSuccessfully
+
 }

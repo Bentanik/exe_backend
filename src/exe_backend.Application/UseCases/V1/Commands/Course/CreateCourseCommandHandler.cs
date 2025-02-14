@@ -19,6 +19,7 @@ public sealed class CreateCourseCommandHandler
 
         // Create course
         var course = MapToCourse(command);
+
         // Validation with case create course have category andc category must type Guid
         if (command.CategoryId != null && command.CategoryId != Guid.Empty)
         {
@@ -29,8 +30,22 @@ public sealed class CreateCourseCommandHandler
             if (category != null)
             {
                 course.AssignCategory(category);
-            }            
+            }
         }
+
+        // Validation with case create course have level andc level must type Guid
+        if (command.LevelId != null && command.LevelId != Guid.Empty)
+        {
+            var level = await unitOfWork.LevelRepository
+                .FindSingleAsync(ct => ct.Id == command.LevelId);
+
+            // Found level, the course will be assigned to that
+            if (level != null)
+            {
+                course.AssignLevel(level);
+            }
+        }
+
 
         // Save database
         unitOfWork.CourseRepository.Add(course);

@@ -1,4 +1,3 @@
-using exe_backend.Contract.Common.Enums;
 using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.Services.Course;
 
@@ -11,14 +10,23 @@ public static class CourseApi
     {
         var group = builder.MapGroup(BaseUrl).HasApiVersion(1);
 
-        group.MapPost("create-course", HandleCreateCourseAsync);
-        group.MapPost("create-chapter", HandleCreateChapterAsync);
-        group.MapPost("create-lecture", HandleCreateLectureAsync);
-        group.MapGet("get-courses", HandleGetCoursesAsync);
-        group.MapGet("get-course-by-id", HandleGetCourseByIdAsync);
-        group.MapGet("get-chapters", HandleGetChaptersAsync);
-        group.MapGet("get-chapter-by-id", HandleGetChapterByIdAsync);
-        group.MapGet("get-lectures", HandleGetLecturesAsync);
+        group.MapPost("create-course", HandleCreateCourseAsync).RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapPost("create-chapter", HandleCreateChapterAsync)
+        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapPost("create-lecture", HandleCreateLectureAsync)
+        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapGet("get-courses", HandleGetCoursesAsync)
+        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapGet("get-course-by-id", HandleGetCourseByIdAsync)
+        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapGet("get-chapters", HandleGetChaptersAsync)
+        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapGet("get-chapter-by-id", HandleGetChapterByIdAsync)
+        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapGet("get-lectures", HandleGetLecturesAsync)
+        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapGet("get-lecture-by-id", HandleGetLectureByIdAsync)
+        .RequireAuthorization(RoleEnum.Admin.ToString());
         return builder;
     }
 
@@ -34,10 +42,13 @@ public static class CourseApi
         var description = form["Description"];
         var thumbnailFile = form.Files["ThumbnailFile"];
         var categoryId = form["CategoryId"];
+        var levelId = form["LevelId"];
 
         _ = Guid.TryParse(categoryId, out Guid categoryIdParsed);
 
-        var request = new Command.CreateCourseCommand(name, description, thumbnailFile, categoryIdParsed);
+        _ = Guid.TryParse(levelId, out Guid levelIdParsed);
+
+        var request = new Command.CreateCourseCommand(name, description, thumbnailFile, categoryIdParsed, levelIdParsed);
 
         var result = await sender.Send(request);
 
@@ -108,6 +119,25 @@ public static class CourseApi
         }
 
         var result = await sender.Send(new Query.GetCourseByIdQuery(courseIdParsed, includes));
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleGetLectureByIdAsync(ISender sender, [FromQuery] string lectureId, [FromQuery] string[]? includes = null)
+    {
+        Guid? lectureIdParsed = null;
+        if (!string.IsNullOrEmpty(lectureId))
+        {
+            if (!Guid.TryParse(lectureId, out var parsedId))
+            {
+                return Results.BadRequest("Invalid lecture ID format.");
+            }
+            lectureIdParsed = parsedId;
+        }
+
+        var result = await sender.Send(new Query.GetLectureByIdQuery(lectureIdParsed, includes));
         if (result.IsFailure)
             return HandlerFailure(result);
 

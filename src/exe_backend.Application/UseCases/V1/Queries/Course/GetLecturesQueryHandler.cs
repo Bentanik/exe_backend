@@ -29,15 +29,14 @@ public sealed class GetLecturesQueryHandler
         lecturesQuery = query.SortOrder == SortOrder.Descending
              ? lecturesQuery.OrderByDescending(keySelector) : lecturesQuery.OrderBy(keySelector);
 
-        var pagedResultCourse = await PagedResult<Domain.Models.Lecture>.CreateAsync(lecturesQuery, query.PageIndex, query.PageSize);
+        var pagedResultLecture = await PagedResult<Domain.Models.Lecture>.CreateAsync(lecturesQuery, query.PageIndex, query.PageSize);
 
-        var lectureDTOs = pagedResultCourse.Items.Adapt<List<LectureDTO>>();
+        var lectureDTOs = pagedResultLecture.Items.Adapt<List<LectureDTO>>();
 
-        var pagedResultLectureDto = PagedResult<LectureDTO>.Create(lectureDTOs, pagedResultCourse.PageIndex, pagedResultCourse.PageSize, pagedResultCourse.TotalCount);
+        var pagedResultLectureDto = PagedResult<LectureDTO>.Create(lectureDTOs, pagedResultLecture.PageIndex, pagedResultLecture.PageSize, pagedResultLecture.TotalCount);
 
         var response = new Contract.Services.Course.Response.LecturesResponse(pagedResultLectureDto);
 
-
-        return Result.Success(new Success<Contract.Services.Course.Response.LecturesResponse>(CourseMessage.GetChapterSuccessfully.GetMessage().Code, CourseMessage.GetChapterSuccessfully.GetMessage().Message, response));
+        return Result.Success(new Success<Contract.Services.Course.Response.LecturesResponse>(CourseMessage.GetLectureSuccessfully.GetMessage().Code, CourseMessage.GetChapterSuccessfully.GetMessage().Message, response));
     }
 }

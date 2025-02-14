@@ -6,7 +6,7 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
 
-    public UnitOfWork(ApplicationDbContext context, IUserRepository userRepository, IRoleRepository roleRepository, ICourseRepository courseRepository, IChapterRepository chapterRepository, ILectureRepository lectureRepository, ICategoryRepository categoryRepository)
+    public UnitOfWork(ApplicationDbContext context, IUserRepository userRepository, IRoleRepository roleRepository, ICourseRepository courseRepository, IChapterRepository chapterRepository, ILectureRepository lectureRepository, ICategoryRepository categoryRepository, ILevelRepository levelRepository)
     {
         _context = context;
         UserRepository = userRepository;
@@ -15,6 +15,7 @@ public class UnitOfWork : IUnitOfWork
         ChapterRepository = chapterRepository;
         LectureRepository = lectureRepository;
         CategoryRepository = categoryRepository;
+        LevelRepository = levelRepository;
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -28,6 +29,6 @@ public class UnitOfWork : IUnitOfWork
     public ICourseRepository CourseRepository { get; }
     public IChapterRepository ChapterRepository { get; }
     public ILectureRepository LectureRepository { get; }
-
     public ICategoryRepository CategoryRepository { get; }
+    public ILevelRepository LevelRepository { get; }
 }

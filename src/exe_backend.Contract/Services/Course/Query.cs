@@ -11,4 +11,6 @@ public static class Query
     public record GetChapterByIdQuery(Guid? ChapterId, string?[] IncludesProperty) : IQuery<Success<Response.ChapterResponse>>;
 
     public record GetLecturesQuery(string? SearchTerm, string? SortColumn, SortOrder? SortOrder, string?[] IncludesProperty, int PageIndex, int PageSize) : IQuery<Success<Response.LecturesResponse>>;
+
+    public record GetLectureByIdQuery(Guid? LectureId, string?[] IncludesProperty) : IQuery<Success<Response.LectureResponse>>;
 }

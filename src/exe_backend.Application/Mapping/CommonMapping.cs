@@ -19,7 +19,8 @@ public class MappingConfig
             .Map(dest => dest.Duration, src => src.Duration);
 
         TypeAdapterConfig<Course, CourseDTO>.NewConfig()
-            .Map(dest => dest.Category, src => src.Category);
+            .Map(dest => dest.Category, src => src.Category)
+            .Map(dest => dest.Level, src => src.Level);
 
     }
 }

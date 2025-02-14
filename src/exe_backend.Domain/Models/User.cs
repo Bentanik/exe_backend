@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using exe_backend.Domain.Enums;
+using exe_backend.Domain.ValueObjects;
 
 namespace exe_backend.Domain.Models;
 
@@ -10,7 +12,9 @@ public class User : DomainEntity<Guid>
     public bool IsActive { get; private set; } = default!; // Active email
     public string? PublicAvatarId { get; private set; }
     public string? PublicAvatarUrl { get; private set; }
+    public UserSubscription UserSubcription { get; private set; } = default!;
 
+    // Role Foreign key
     public Guid RoleId { get; private set; } = default;
     [JsonIgnore]
     public Role Role { get; set; } = default!;
@@ -26,7 +30,8 @@ public class User : DomainEntity<Guid>
             IsActive = false,
             IsDeleted = false,
             PublicAvatarId = publicMediaId,
-            PublicAvatarUrl = publicMediaUrl
+            PublicAvatarUrl = publicMediaUrl,
+            UserSubcription = new UserSubscription(SubscriptionType.Free)
         };
     }
 

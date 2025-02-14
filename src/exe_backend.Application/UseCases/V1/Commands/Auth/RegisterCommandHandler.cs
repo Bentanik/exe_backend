@@ -1,4 +1,3 @@
-using exe_backend.Contract.Common.Enums;
 using exe_backend.Contract.DTOs.UserDTOs;
 using exe_backend.Contract.Services.Auth;
 

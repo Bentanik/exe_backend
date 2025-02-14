@@ -12,8 +12,8 @@ using exe_backend.Persistence;
 namespace exe_backend.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250213141536_Initial")]
-    partial class Initial
+    [Migration("20250214155312_intial12")]
+    partial class intial12
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -110,6 +110,9 @@ namespace exe_backend.Persistence.Migrations
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<Guid?>("LevelId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
@@ -123,6 +126,8 @@ namespace exe_backend.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("LevelId");
 
                     b.ToTable("Courses");
                 });
@@ -158,6 +163,33 @@ namespace exe_backend.Persistence.Migrations
                     b.HasIndex("ChapterId");
 
                     b.ToTable("Lectures");
+                });
+
+            modelBuilder.Entity("exe_backend.Domain.Models.Level", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("QuantityCourses")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Level");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Role", b =>
@@ -249,6 +281,12 @@ namespace exe_backend.Persistence.Migrations
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_Category_Course_CourseId");
 
+                    b.HasOne("exe_backend.Domain.Models.Level", "Level")
+                        .WithMany("Courses")
+                        .HasForeignKey("LevelId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Level_Course_CourseId");
+
                     b.OwnsOne("exe_backend.Domain.ValueObjects.Image", "Thumbnail", b1 =>
                         {
                             b1.Property<Guid>("CourseId")
@@ -271,6 +309,8 @@ namespace exe_backend.Persistence.Migrations
                         });
 
                     b.Navigation("Category");
+
+                    b.Navigation("Level");
 
                     b.Navigation("Thumbnail");
                 });
@@ -339,7 +379,32 @@ namespace exe_backend.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.OwnsOne("exe_backend.Domain.ValueObjects.UserSubscription", "UserSubcription", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<DateTime>("EndDate")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("StartDate")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<int>("Type")
+                                .HasColumnType("int");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
                     b.Navigation("Role");
+
+                    b.Navigation("UserSubcription")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Category", b =>
@@ -355,6 +420,11 @@ namespace exe_backend.Persistence.Migrations
             modelBuilder.Entity("exe_backend.Domain.Models.Course", b =>
                 {
                     b.Navigation("Chapters");
+                });
+
+            modelBuilder.Entity("exe_backend.Domain.Models.Level", b =>
+                {
+                    b.Navigation("Courses");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Role", b =>

@@ -9,4 +9,5 @@ public static class Response
     public record ChaptersResponse(PagedResult<ChapterDTO> Chapters);
     public record ChapterResponse(ChapterDTO Chapter);
     public record LecturesResponse(PagedResult<LectureDTO> Lectures);
+    public record LectureResponse(LectureDTO Lecture);
 }
