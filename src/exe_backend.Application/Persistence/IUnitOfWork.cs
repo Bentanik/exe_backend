@@ -2,7 +2,7 @@ using exe_backend.Application.Persistence.Repository;
 
 namespace exe_backend.Application.Persistence;
 
-public interface IUnitOfWork : IAsyncDisposable
+public interface IUnitOfWork : IAsyncDisposable, IDisposable
 {
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     IUserRepository UserRepository { get; }
@@ -12,5 +12,6 @@ public interface IUnitOfWork : IAsyncDisposable
     ILectureRepository LectureRepository { get; }
     ICategoryRepository CategoryRepository { get; }
     ILevelRepository LevelRepository { get; }
-
+    ISubscriptionRepository SubscriptionRepository { get; }
+    ISubscriptionRepositoryPackage SubscriptionPackageRepository { get; }
 }

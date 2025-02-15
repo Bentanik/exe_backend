@@ -12,8 +12,8 @@ using exe_backend.Persistence;
 namespace exe_backend.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250214155312_intial12")]
-    partial class intial12
+    [Migration("20250215114652_intial")]
+    partial class intial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,7 +49,7 @@ namespace exe_backend.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Chapter", b =>
@@ -189,7 +189,7 @@ namespace exe_backend.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Level");
+                    b.ToTable("Levels");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Role", b =>
@@ -214,6 +214,74 @@ namespace exe_backend.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("exe_backend.Domain.Models.Subscription", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("SubscriptionPackageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionPackageId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
+
+                    b.ToTable("Subscriptions");
+                });
+
+            modelBuilder.Entity("exe_backend.Domain.Models.SubscriptionPackage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ExpiredMonth")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("Price")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SubscriptionPackages");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.User", b =>
@@ -253,6 +321,9 @@ namespace exe_backend.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("SubscriptionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -371,6 +442,24 @@ namespace exe_backend.Persistence.Migrations
                     b.Navigation("VideoLecture");
                 });
 
+            modelBuilder.Entity("exe_backend.Domain.Models.Subscription", b =>
+                {
+                    b.HasOne("exe_backend.Domain.Models.SubscriptionPackage", "SubscriptionPackage")
+                        .WithMany()
+                        .HasForeignKey("SubscriptionPackageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("exe_backend.Domain.Models.User", "User")
+                        .WithOne("Subscription")
+                        .HasForeignKey("exe_backend.Domain.Models.Subscription", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("SubscriptionPackage");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("exe_backend.Domain.Models.User", b =>
                 {
                     b.HasOne("exe_backend.Domain.Models.Role", "Role")
@@ -379,32 +468,7 @@ namespace exe_backend.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("exe_backend.Domain.ValueObjects.UserSubscription", "UserSubcription", b1 =>
-                        {
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<DateTime>("EndDate")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime>("StartDate")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<int>("Type")
-                                .HasColumnType("int");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("Users");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
                     b.Navigation("Role");
-
-                    b.Navigation("UserSubcription")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Category", b =>
@@ -430,6 +494,11 @@ namespace exe_backend.Persistence.Migrations
             modelBuilder.Entity("exe_backend.Domain.Models.Role", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("exe_backend.Domain.Models.User", b =>
+                {
+                    b.Navigation("Subscription");
                 });
 #pragma warning restore 612, 618
         }

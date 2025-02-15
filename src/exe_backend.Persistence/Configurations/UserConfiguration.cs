@@ -6,18 +6,10 @@ public class UserConfiguration : IEntityTypeConfiguration<Domain.Models.User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        // Configure UserSubcription
-        builder.OwnsOne(
-        o => o.UserSubcription, identityBuilder =>
-        {
-            identityBuilder.Property(c => c.StartDate)
-                .IsRequired();
-
-            identityBuilder.Property(c => c.EndDate)
-                .IsRequired();
-            
-            identityBuilder.Property(c => c.Type)
-                .IsRequired();
-        });
+        // Config relationship 1-1 User and Subcription
+        builder.HasOne(u => u.Subscription)
+            .WithOne(s => s.User)
+            .HasForeignKey<Subscription>(s => s.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

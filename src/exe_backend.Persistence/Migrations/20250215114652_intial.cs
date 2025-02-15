@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace exe_backend.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class IntialCreate : Migration
+    public partial class intial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Category",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -24,11 +24,11 @@ namespace exe_backend.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Category", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Level",
+                name: "Levels",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -40,7 +40,7 @@ namespace exe_backend.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Level", x => x.Id);
+                    table.PrimaryKey("PK_Levels", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -56,6 +56,23 @@ namespace exe_backend.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SubscriptionPackages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<long>(type: "bigint", nullable: false),
+                    ExpiredMonth = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubscriptionPackages", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -80,13 +97,13 @@ namespace exe_backend.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_Category_Course_CourseId",
                         column: x => x.CategoryId,
-                        principalTable: "Category",
+                        principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Level_Course_CourseId",
                         column: x => x.LevelId,
-                        principalTable: "Level",
+                        principalTable: "Levels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                 });
@@ -102,8 +119,8 @@ namespace exe_backend.Persistence.Migrations
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     PublicAvatarId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PublicAvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SubscriptionType = table.Column<int>(type: "int", nullable: false),
                     RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubscriptionId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: true)
@@ -142,6 +159,36 @@ namespace exe_backend.Persistence.Migrations
                         principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Subscriptions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubscriptionPackageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscriptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_SubscriptionPackages_SubscriptionPackageId",
+                        column: x => x.SubscriptionPackageId,
+                        principalTable: "SubscriptionPackages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -192,6 +239,18 @@ namespace exe_backend.Persistence.Migrations
                 column: "ChapterId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_SubscriptionPackageId",
+                table: "Subscriptions",
+                column: "SubscriptionPackageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_UserId",
+                table: "Subscriptions",
+                column: "UserId",
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
                 table: "Users",
                 column: "RoleId");
@@ -204,22 +263,28 @@ namespace exe_backend.Persistence.Migrations
                 name: "Lectures");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Subscriptions");
 
             migrationBuilder.DropTable(
                 name: "Chapters");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "SubscriptionPackages");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Courses");
 
             migrationBuilder.DropTable(
-                name: "Category");
+                name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "Level");
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Levels");
         }
     }
 }

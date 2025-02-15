@@ -29,7 +29,8 @@ public sealed class RegisterCommandHandler
             .FindSingleAsync(r => r.Name == RoleEnum.Member.ToString());
 
         var userId = Guid.NewGuid();
-        var user = User.Create(userId, command.Email, passwordHashed, command.FullName, roleMember.Id, avatarDto.AvatarId, avatarDto.AvatarUrl);
+
+        var user = Domain.Models.User.Create(userId, command.Email, passwordHashed, command.FullName, roleMember.Id, avatarDto.AvatarId, avatarDto.AvatarUrl);
 
         unitOfWork.UserRepository.Add(user);
         await unitOfWork.SaveChangesAsync(cancellationToken);

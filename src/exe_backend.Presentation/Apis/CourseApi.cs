@@ -1,8 +1,5 @@
-using System.Security.Claims;
-using exe_backend.Contract.Common.Constants;
 using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.Services.Course;
-using Microsoft.Identity.Client;
 
 namespace exe_backend.Presentation.Apis;
 

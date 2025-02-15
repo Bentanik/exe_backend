@@ -5,8 +5,7 @@ namespace exe_backend.Application.UseCases.V1.Queries.Auth;
 
 public sealed class RefreshTokenQueryHandler
     (ITokenGeneratorService tokenGeneratorService,
-    IUnitOfWork unitOfWork,
-    ISender sender)
+    IUnitOfWork unitOfWork)
     : IQueryHandler<Query.RefreshTokenQuery, Success<Contract.Services.Auth.Response.LoginResponse>>
 {
     public async Task<Result<Success<Contract.Services.Auth.Response.LoginResponse>>>
