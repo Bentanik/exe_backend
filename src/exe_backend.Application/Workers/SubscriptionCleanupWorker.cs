@@ -21,7 +21,7 @@ public class SubscriptionCleanupWorker : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             await ProcessExpiredSubscriptions(stoppingToken);
-            await Task.Delay(TimeSpan.FromSeconds(20), stoppingToken); // Run after 1 day
+            await Task.Delay(TimeSpan.FromDays(1), stoppingToken); // Run after 1 day
         }
 
         _logger.LogInformation("Subscription Cleanup Service is stopping.");

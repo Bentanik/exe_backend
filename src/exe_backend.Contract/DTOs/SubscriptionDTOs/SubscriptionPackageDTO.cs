@@ -4,6 +4,6 @@ public record SubscriptionPackageDTO
 (
     Guid? Id = null,
     string? Name = null,
-    long? Price = null,
+    int? Price = null,
     DateTime? ExpiredDate = null
 );

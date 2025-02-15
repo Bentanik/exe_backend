@@ -29,7 +29,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPasswordHashService, PasswordHashService>()
                 .AddScoped<IEmailService, EmailService>()
                 .AddScoped<ITokenGeneratorService, TokenGeneratorService>()
-                .AddScoped<IMediaService, MediaService>();
+                .AddScoped<IMediaService, MediaService>()
+                .AddScoped<IPaymentService, PaymentService>();
 
         return services;
     }

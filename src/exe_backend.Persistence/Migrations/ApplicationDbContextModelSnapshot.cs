@@ -276,8 +276,8 @@ namespace exe_backend.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("Price")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -321,9 +321,6 @@ namespace exe_backend.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("SubscriptionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -453,7 +450,7 @@ namespace exe_backend.Persistence.Migrations
                     b.HasOne("exe_backend.Domain.Models.User", "User")
                         .WithOne("Subscription")
                         .HasForeignKey("exe_backend.Domain.Models.Subscription", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("SubscriptionPackage");
 

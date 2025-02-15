@@ -12,7 +12,7 @@ using exe_backend.Persistence;
 namespace exe_backend.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250215114652_intial")]
+    [Migration("20250215171957_intial")]
     partial class intial
     {
         /// <inheritdoc />
@@ -263,6 +263,9 @@ namespace exe_backend.Persistence.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ExpiredMonth")
                         .HasColumnType("int");
 
@@ -272,12 +275,12 @@ namespace exe_backend.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("Price")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Type")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -321,9 +324,6 @@ namespace exe_backend.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("SubscriptionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -453,7 +453,7 @@ namespace exe_backend.Persistence.Migrations
                     b.HasOne("exe_backend.Domain.Models.User", "User")
                         .WithOne("Subscription")
                         .HasForeignKey("exe_backend.Domain.Models.Subscription", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("SubscriptionPackage");
 

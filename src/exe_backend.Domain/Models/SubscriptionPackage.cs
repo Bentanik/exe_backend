@@ -3,11 +3,11 @@ namespace exe_backend.Domain.Models;
 public class SubscriptionPackage : DomainEntity<Guid>
 {
     public string Name { get; private set; } = default!;
-    public long Price { get; private set; } = default!;
+    public int Price { get; private set; } = default!;
     public int ExpiredMonth { get; private set; } = default!;
     public string? Description { get; private set; }
 
-    public static SubscriptionPackage Create(Guid id, string name, long price, int expiredMonth, string? description = null)
+    public static SubscriptionPackage Create(Guid id, string name, int price, int expiredMonth, string? description = null)
     {
         var subcriptionPackage = new SubscriptionPackage
         {
