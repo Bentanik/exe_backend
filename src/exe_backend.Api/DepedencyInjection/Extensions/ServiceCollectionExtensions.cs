@@ -16,7 +16,9 @@ public static class ServiceCollectionExtensions
             .Configure<AuthSetting>(configuration.GetSection(AuthSetting.SectionName))
             .Configure<CloudinarySetting>(configuration.GetSection(CloudinarySetting.SectionName))
             .Configure<UserSetting>(configuration.GetSection(UserSetting.SectionName))
-            .Configure<AdminSetting>(configuration.GetSection(AdminSetting.SectionName));
+            .Configure<AdminSetting>(configuration.GetSection(AdminSetting.SectionName))
+            .Configure<ClientSetting>(configuration.GetSection(ClientSetting.SectionName))
+            .Configure<PayOSSetting>(configuration.GetSection(PayOSSetting.SectionName));
 
         return services;
     }

@@ -15,6 +15,7 @@ public static class SubscriptionApi
         group.MapGet("get-subscription-packages", HandleGetSubscriptionPackagesAsync);
 
         group.MapGet("get-subscription-package-by-id", HandleGetSubscriptionByIdPackageAsync);
+        
         return builder;
     }
 
@@ -57,7 +58,6 @@ public static class SubscriptionApi
         return Results.Ok(result);
     }
 
-
     private static IResult HandlerFailure(Result result) =>
          result switch
          {
@@ -74,7 +74,6 @@ public static class SubscriptionApi
                          "Bab Request", StatusCodes.Status400BadRequest,
                          result.Error))
          };
-
 
     private static ProblemDetails CreateProblemDetails(
        string title,

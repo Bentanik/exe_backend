@@ -1,4 +1,3 @@
-
 using exe_backend.Contract.Exceptions.BussinessExceptions;
 using exe_backend.Contract.Services.User;
 
@@ -13,6 +12,10 @@ public static class UserApi
 
         // Role User
         group.MapPost("purcharse-vip", HandlePurcharseVipAsync).RequireAuthorization(RoleEnum.Member.ToString());
+
+        group.MapGet("success-purcharse-vip", HandleSuccessPurcharseVipAsync);
+
+        group.MapGet("fail-purcharse-vip", HandleFailPurcharseVipAsync);
 
         group.MapPost("cancel-vip", HandleCancelVipAsync)
         .RequireAuthorization(RoleEnum.Member.ToString());
@@ -34,6 +37,26 @@ public static class UserApi
         if (userId == null || userId == Guid.Empty) throw new Exception("Wrong format");
 
         var result = await sender.Send(new Command.PurcharseVipCommand(userId, subscriptionPackageIdParsed));
+
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleSuccessPurcharseVipAsync(ISender sender, HttpContext context, [FromQuery] long orderId)
+    {
+        var result = await sender.Send(new Command.SuccessPurcharseVipCommand(orderId));
+
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleFailPurcharseVipAsync(ISender sender, HttpContext context, [FromQuery] long orderId)
+    {
+        var result = await sender.Send(new Command.FailPurcharseVipCommand(orderId));
 
         if (result.IsFailure)
             return HandlerFailure(result);
