@@ -15,7 +15,7 @@ public static class SubscriptionApi
         group.MapGet("get-subscription-packages", HandleGetSubscriptionPackagesAsync);
 
         group.MapGet("get-subscription-package-by-id", HandleGetSubscriptionByIdPackageAsync);
-        
+
         return builder;
     }
 

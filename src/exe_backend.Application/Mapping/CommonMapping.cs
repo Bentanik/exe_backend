@@ -20,7 +20,10 @@ public class MappingConfig
 
         TypeAdapterConfig<Course, CourseDTO>.NewConfig()
             .Map(dest => dest.Category, src => src.Category)
-            .Map(dest => dest.Level, src => src.Level);
+            .Map(dest => dest.Level, src => src.Level)
+            .Map(dest => dest.Chapters, src => src.Chapters);
 
+        TypeAdapterConfig<Chapter, ChapterDTO>.NewConfig()
+            .Map(dest => dest.Lectures, src => src.Lectures);
     }
 }

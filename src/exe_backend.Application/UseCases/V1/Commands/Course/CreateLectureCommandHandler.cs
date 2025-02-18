@@ -5,13 +5,16 @@ using static exe_backend.Contract.Services.Course.Event;
 namespace exe_backend.Application.UseCases.V1.Commands.Course;
 
 public sealed class CreateLectureCommandHandler
-    (IUnitOfWork unitOfWork, IPublisher publisher) 
+    (IUnitOfWork unitOfWork, IPublisher publisher)
     : ICommandHandler<Command.CreateLectureCommand>
 {
     public async Task<Result> Handle(Command.CreateLectureCommand command, CancellationToken cancellationToken)
     {
         var chapter = await unitOfWork.ChapterRepository
             .FindSingleAsync(ct => ct.Id == command.LectureDTO.ChapterId);
+
+        if (chapter == null)
+            throw new CourseException.ChapterNotFoundException();
 
         // Map to lecture
         var lecture = MapToLecture(command, chapter);
@@ -23,7 +26,7 @@ public sealed class CreateLectureCommandHandler
         // Send event
         var lectureDto = lecture.Adapt<LectureDTO>();
 
-        var createdLectureEvent = new CreatedLectureEvent(Guid.NewGuid(),lectureDto, command.ImageFile, command.VideoFile);
+        var createdLectureEvent = new CreatedLectureEvent(Guid.NewGuid(), lectureDto, command.ImageFile, command.VideoFile);
 
         await publisher.Publish(createdLectureEvent, cancellationToken);
 

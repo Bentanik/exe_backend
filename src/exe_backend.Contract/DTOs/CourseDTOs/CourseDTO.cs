@@ -11,5 +11,6 @@ public record CourseDTO
     ImageDTO? Thumbnail = null,
     int? QuantityChapters = null,
     CategoryDTO? Category = null,
-    LevelDTO? Level = null
+    LevelDTO? Level = null,
+    ChapterDTO[]? Chapters = null
 );

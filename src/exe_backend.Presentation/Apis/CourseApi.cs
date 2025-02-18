@@ -19,14 +19,11 @@ public static class CourseApi
         group.MapPost("create-lecture", HandleCreateLectureAsync)
         .RequireAuthorization(RoleEnum.Admin.ToString());
 
-        group.MapGet("get-courses", HandleGetCoursesAsync)
-        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapGet("get-courses", HandleGetCoursesAsync);
 
-        group.MapGet("get-course-by-id", HandleGetCourseByIdAsync)
-        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapGet("get-course-by-id", HandleGetCourseByIdAsync);
 
-        group.MapGet("get-chapters", HandleGetChaptersAsync)
-        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapGet("get-chapters", HandleGetChaptersAsync);
 
         group.MapGet("get-chapter-by-id", HandleGetChapterByIdAsync)
         .RequireAuthorization(RoleEnum.Admin.ToString());
@@ -38,7 +35,7 @@ public static class CourseApi
         .RequireAuthorization(RoleEnum.Admin.ToString());
 
         // Role User
-        
+        // group.MapGet("get-chapter-by-id")
         return builder;
     }
 
