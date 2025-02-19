@@ -29,7 +29,7 @@ public sealed class ChangePasswordCommandHandler
         var newHashPassword = passwordHashService.HashPassword(command.NewPassword);
         
         // Update user
-        user.Update(password: newHashPassword);
+        // user.Update(password: newHashPassword);
 
         unitOfWork.UserRepository.Update(user);
         await unitOfWork.SaveChangesAsync(cancellationToken);

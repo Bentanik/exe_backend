@@ -20,11 +20,11 @@ public sealed class LoginQueryHandler
             throw new AuthException.UserNotExistException();
 
         // Check password
-        var isCheckPassword = passwordHashService.VerifyPassword(query.Password, user.Password);
+        // var isCheckPassword = passwordHashService.VerifyPassword(query.Password, user.Password);
 
         // If password not match
-        if (isCheckPassword == false)
-            throw new AuthException.PasswordNotMatchException();
+        // if (isCheckPassword == false)
+        //     throw new AuthException.PasswordNotMatchException();
 
         // Genenrate token
         var accessToken = tokenGenenratorService.GenerateAccessToken(user.Id, user.Role.Name);

@@ -4,44 +4,46 @@ using exe_backend.Contract.Services.Auth;
 namespace exe_backend.Application.UseCases.V1.Commands.Auth;
 
 public sealed class RegisterCommandHandler
-    (IPasswordHashService passwordHashService, IUnitOfWork unitOfWork, IPublisher publisher, IOptions<UserSetting> userSetting)
+    (ISender sender)
     : ICommandHandler<Command.RegisterCommand>
 {
     public async Task<Result> Handle(Command.RegisterCommand command, CancellationToken cancellationToken)
     {
-        // Check user exists
-        var userExist = await unitOfWork.UserRepository
-            .AnyAsync(u => u.Email == command.Email);
+        try
+        {
+            // Create account use firebase
+            var userArgs = new UserRecordArgs
+            {
+                Email = command.Email,
+                Password = command.Password,
+            };
 
-        // If user exists will exception
-        if (userExist == true)
+            var userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(userArgs, cancellationToken);
+
+            // Send to service create user
+
+            var createUserCommand = MapToCreateUserCommand(command, userRecord.Uid);
+
+            _ = await sender.Send(createUserCommand, cancellationToken);
+
+            return Result.Success(new Success
+            (AuthMessage.RegisterSuccessfully.GetMessage().Code,
+            AuthMessage.RegisterSuccessfully.GetMessage().Message));
+        }
+        catch (FirebaseAuthException ex)
+        {
+            System.Console.WriteLine(ex.Message.ToString());
             throw new AuthException.UserExistException();
+        }
+    }
 
-        // Get avatarDto from appsetting
-        var avatarDto = userSetting.Value.Avatar;
-        // Password hash
-        var passwordHashed = passwordHashService.HashPassword(command.Password);
-
-        // Create user and save Db
-    
-        // Find Role
-        var roleMember = await unitOfWork.RoleRepository
-            .FindSingleAsync(r => r.Name == RoleEnum.Member.ToString());
-
+    private static Contract.Services.User.Command.CreateUserCommand MapToCreateUserCommand(Command.RegisterCommand command, string identityId)
+    {
         var userId = Guid.NewGuid();
+        var userDto = new UserDto(Id: userId, Email: command.Email, IdentityId: identityId, FullName: command.FullName);
 
-        var user = Domain.Models.User.Create(userId, command.Email, passwordHashed, command.FullName, roleMember.Id, avatarDto.AvatarId, avatarDto.AvatarUrl);
+        var createUserCommand = new Contract.Services.User.Command.CreateUserCommand(userDto);
 
-        unitOfWork.UserRepository.Add(user);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        // Send event when user registered
-        var userDto = user.Adapt<UserDto>();
-
-        await publisher.Publish(new Contract.Services.Auth.Event.UserRegisterdEvent(Guid.NewGuid(), userDto), cancellationToken);
-
-        return Result.Success(new Success
-        (AuthMessage.RegisterSuccessfully.GetMessage().Code,
-        AuthMessage.RegisterSuccessfully.GetMessage().Message));
+        return createUserCommand;
     }
 }

@@ -83,5 +83,8 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    
+    public static IServiceCollection AddApiService(this IServiceCollection services, IConfiguration configuration)
+    {
+        return services;
+    }
 }
