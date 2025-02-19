@@ -37,7 +37,14 @@ public static class ServiceCollectionExtensions
                 .AddScoped<IEmailService, EmailService>()
                 .AddScoped<ITokenGeneratorService, TokenGeneratorService>()
                 .AddScoped<IMediaService, MediaService>()
-                .AddScoped<IPaymentService, PaymentService>();
+                .AddScoped<IPaymentService, PaymentService>()
+                .AddScoped<IJwtProviderService, JwtProviderService>();
+
+        services.AddHttpClient<IJwtProviderService, JwtProviderService>((sp, HttpClient) => {
+            var configuration = sp.GetRequiredService<IConfiguration>();
+
+            HttpClient.BaseAddress = new Uri(configuration["AuthSetting:TokenUri"]);
+        });
 
         return services;
     }

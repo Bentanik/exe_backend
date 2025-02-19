@@ -39,28 +39,30 @@ public static class AuthApi
         if (result.IsFailure)
             return HandlerFailure(result);
 
-        var value = result.Value;
+        // var value = result.Value;
 
-        var refreshTokenExpMinute = AuthSetting.Value.RefreshTokenExpMinute;
+        // var refreshTokenExpMinute = AuthSetting.Value.RefreshTokenExpMinute;
 
-        httpContext.Response.Cookies.Append(AuthConstant.RefreshToken,
-            value.Data.LoginDto.AuthTokenDTO.RefreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
-                Expires = DateTime.Now.AddMinutes(refreshTokenExpMinute),
-            });
+        // httpContext.Response.Cookies.Append(AuthConstant.RefreshToken,
+        //     value.Data.LoginDto.AuthTokenDTO.RefreshToken, new CookieOptions
+        //     {
+        //         HttpOnly = true,
+        //         Secure = true,
+        //         SameSite = SameSiteMode.None,
+        //         Expires = DateTime.Now.AddMinutes(refreshTokenExpMinute),
+        //     });
 
-        var loginDto = value.Data.LoginDto with
-        {
-            AuthTokenDTO = value.Data.LoginDto.AuthTokenDTO with
-            {
-                RefreshToken = null // Remove refresh token when return
-            }
-        };
+        // var loginDto = value.Data.LoginDto with
+        // {
+        //     AuthTokenDTO = value.Data.LoginDto.AuthTokenDTO with
+        //     {
+        //         RefreshToken = null // Remove refresh token when return
+        //     }
+        // };
 
-        return Results.Ok(loginDto);
+        // return Results.Ok(loginDto);
+
+        return Results.Ok(result);
     }
 
     private static async Task<IResult> HandleRefreshTokenAsync
