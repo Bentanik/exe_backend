@@ -31,17 +31,6 @@ public sealed class GetChaptersQueryHandler
                     includeProperties: includes
                 );
 
-        // var chaptersQuery = string.IsNullOrWhiteSpace(query.SearchTerm)
-        //     ? unitOfWork.ChapterRepository.FindAll(x => (query.NoneAssignedCourse == true ? x.CourseId == null : true),includeProperties: includes) : Guid.TryParse(query.SearchTerm, out Guid courseId)
-        //         ? unitOfWork.ChapterRepository.FindAll(
-        //             x => x.CourseId == courseId,
-        //             includeProperties: includes
-        //         )
-        //         : unitOfWork.ChapterRepository.FindAll(
-        //             x => x.Name.Contains(query.SearchTerm),
-        //             includeProperties: includes
-        //         );
-
         // Get sort follow property
         Expression<Func<Domain.Models.Chapter, object>> keySelector = query.SortColumn?.ToLower() switch
         {

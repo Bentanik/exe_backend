@@ -11,12 +11,12 @@ public sealed class GetLecturesQueryHandler
     {
         //Find sort property without Id
         var lecturesQuery = string.IsNullOrWhiteSpace(query.SearchTerm)
-            ? unitOfWork.LectureRepository.FindAll() : Guid.TryParse(query.SearchTerm, out Guid chapterId)
+            ? unitOfWork.LectureRepository.FindAll(x => (query.NoneAssignedChapter == true ? x.ChapterId == null : true)) : Guid.TryParse(query.SearchTerm, out Guid chapterId)
                 ? unitOfWork.LectureRepository.FindAll(
-                    x => x.ChapterId == chapterId
+                    x => (query.NoneAssignedChapter == true ? x.ChapterId == null : x.ChapterId == chapterId)
                 )
                 : unitOfWork.LectureRepository.FindAll(
-                    x => x.Name.Contains(query.SearchTerm)
+                    x => (x.Name.Contains(query.SearchTerm) && (query.NoneAssignedChapter == true ? x.ChapterId == null : true))
                 );
         // Get sort follow property
         Expression<Func<Domain.Models.Lecture, object>> keySelector = query.SortColumn?.ToLower() switch

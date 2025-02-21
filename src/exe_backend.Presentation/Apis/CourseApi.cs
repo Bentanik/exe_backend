@@ -16,8 +16,8 @@ public static class CourseApi
         group.MapPost("create-chapter", HandleCreateChapterAsync);
         // .RequireAuthorization(RoleEnum.Admin.ToString());
 
-        group.MapPost("create-lecture", HandleCreateLectureAsync)
-        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapPost("create-lecture", HandleCreateLectureAsync);
+        // .RequireAuthorization(RoleEnum.Admin.ToString());
 
         group.MapGet("get-courses", HandleGetCoursesAsync);
 
@@ -28,8 +28,8 @@ public static class CourseApi
         group.MapGet("get-chapter-by-id", HandleGetChapterByIdAsync)
         .RequireAuthorization(RoleEnum.Admin.ToString());
 
-        group.MapGet("get-lectures", HandleGetLecturesAsync)
-        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapGet("get-lectures", HandleGetLecturesAsync);
+        // .RequireAuthorization(RoleEnum.Admin.ToString());
 
         group.MapGet("get-lecture-by-id", HandleGetLectureByIdAsync)
         .RequireAuthorization(RoleEnum.Admin.ToString());
@@ -187,11 +187,11 @@ public static class CourseApi
         return Results.Ok(result);
     }
 
-    private static async Task<IResult> HandleGetLecturesAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null)
+    private static async Task<IResult> HandleGetLecturesAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null, bool? NoneAssignedChapter = false)
     {
         var sort = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.Equals("Asc") ? SortOrder.Ascending : SortOrder.Descending : SortOrder.Descending;
 
-        var result = await sender.Send(new Query.GetLecturesQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize));
+        var result = await sender.Send(new Query.GetLecturesQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize, NoneAssignedChapter));
         if (result.IsFailure)
             return HandlerFailure(result);
 

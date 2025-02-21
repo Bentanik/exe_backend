@@ -79,7 +79,7 @@ public sealed class CreateCourseCommandHandler
 
     private async void ReferenceToChapter(Domain.Models.Course course, Guid[] chapterIds)
     {
-        var chapters = await unitOfWork.ChapterRepository.GetChapterNotCourse(chapterIds);
+        var chapters = await unitOfWork.ChapterRepository.GetChaptersNotCourseAsync(chapterIds);
         
         course.AssignChapters(chapters);
     }

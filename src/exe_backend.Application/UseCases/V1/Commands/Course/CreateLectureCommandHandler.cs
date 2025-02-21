@@ -13,9 +13,6 @@ public sealed class CreateLectureCommandHandler
         var chapter = await unitOfWork.ChapterRepository
             .FindSingleAsync(ct => ct.Id == command.LectureDTO.ChapterId);
 
-        if (chapter == null)
-            throw new CourseException.ChapterNotFoundException();
-
         // Map to lecture
         var lecture = MapToLecture(command, chapter);
 
@@ -28,7 +25,7 @@ public sealed class CreateLectureCommandHandler
 
         var createdLectureEvent = new CreatedLectureEvent(Guid.NewGuid(), lectureDto, command.ImageFile, command.VideoFile);
 
-        await publisher.Publish(createdLectureEvent, cancellationToken);
+        // await publisher.Publish(createdLectureEvent, cancellationToken);
 
         return Result.Success(new Success(CourseMessage.SaveLectureSuccessfully.GetMessage().Code, CourseMessage.SaveLectureSuccessfully.GetMessage().Message));
     }
@@ -43,7 +40,9 @@ public sealed class CreateLectureCommandHandler
             description: createLectureCommand.LectureDTO.Description!
         );
 
-        lecture.AssignToChapter(chapter);
+        if (chapter != null)
+            lecture.AssignToChapter(chapter);
+
         return lecture;
     }
 }
