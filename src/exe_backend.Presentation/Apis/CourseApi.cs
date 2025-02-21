@@ -13,8 +13,8 @@ public static class CourseApi
         // Role Admin
         group.MapPost("create-course", HandleCreateCourseAsync).RequireAuthorization(RoleEnum.Admin.ToString());
 
-        group.MapPost("create-chapter", HandleCreateChapterAsync)
-        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapPost("create-chapter", HandleCreateChapterAsync);
+        // .RequireAuthorization(RoleEnum.Admin.ToString());
 
         group.MapPost("create-lecture", HandleCreateLectureAsync)
         .RequireAuthorization(RoleEnum.Admin.ToString());
@@ -52,12 +52,13 @@ public static class CourseApi
         var thumbnailFile = form.Files["ThumbnailFile"];
         var categoryId = form["CategoryId"];
         var levelId = form["LevelId"];
+        var chapterIds = form["ChapterId"].Select(Guid.Parse).ToArray();
 
         _ = Guid.TryParse(categoryId, out Guid categoryIdParsed);
 
         _ = Guid.TryParse(levelId, out Guid levelIdParsed);
 
-        var request = new Command.CreateCourseCommand(name, description, thumbnailFile, categoryIdParsed, levelIdParsed);
+        var request = new Command.CreateCourseCommand(name, description, thumbnailFile, categoryIdParsed, levelIdParsed, chapterIds);
 
         var result = await sender.Send(request);
 
@@ -156,11 +157,11 @@ public static class CourseApi
         return Results.Ok(result);
     }
 
-    private static async Task<IResult> HandleGetChaptersAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null)
+    private static async Task<IResult> HandleGetChaptersAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null, bool? NoneAssignedCourse = false)
     {
         var sort = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.Equals("Asc") ? SortOrder.Ascending : SortOrder.Descending : SortOrder.Descending;
 
-        var result = await sender.Send(new Query.GetChaptersQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize));
+        var result = await sender.Send(new Query.GetChaptersQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize, NoneAssignedCourse));
         if (result.IsFailure)
             return HandlerFailure(result);
 

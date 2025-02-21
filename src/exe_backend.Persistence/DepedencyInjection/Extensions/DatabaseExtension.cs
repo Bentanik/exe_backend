@@ -21,7 +21,7 @@ public static class DatabaseExtention
     private static async Task SeedAsync(ApplicationDbContext context, InitialData initialData, IConfiguration configuration, IServiceProvider serviceProvider)
     {
         await SeedRolesAsync(context, initialData);
-        await SeedAdminAccountAsync(context, configuration, serviceProvider);
+        //await SeedAdminAccountAsync(context, configuration, serviceProvider);
     }
 
     private static async Task SeedRolesAsync(ApplicationDbContext context, InitialData initialData)
@@ -34,29 +34,29 @@ public static class DatabaseExtention
         }
     }
 
-    private static async Task SeedAdminAccountAsync(ApplicationDbContext context, IConfiguration configuration, IServiceProvider serviceProvider)
-    {
-        // Mapping property admin and user from appsetting
-        var adminSetting = new AdminSetting();
-        var userSetting = new UserSetting();
-        configuration.GetSection(AdminSetting.SectionName).Bind(adminSetting);
-        configuration.GetSection(UserSetting.SectionName).Bind(userSetting);
-        // Find role Admin
-        var role = await context.Roles.FirstOrDefaultAsync(r => r.Name == RoleEnum.Admin.ToString());
-        if (!await context.Users.AnyAsync())
-        {
-            var adminId = Guid.NewGuid();
-            // Get service password from DI and hash password
-            var passwordHashService = serviceProvider.GetRequiredService<Contract.Infrastructure.Services.IPasswordHashService>();
+    //private static async Task SeedAdminAccountAsync(ApplicationDbContext context, IConfiguration configuration, IServiceProvider serviceProvider)
+    //{
+    //    // Mapping property admin and user from appsetting
+    //    var adminSetting = new AdminSetting();
+    //    var userSetting = new UserSetting();
+    //    configuration.GetSection(AdminSetting.SectionName).Bind(adminSetting);
+    //    configuration.GetSection(UserSetting.SectionName).Bind(userSetting);
+    //    // Find role Admin
+    //    var role = await context.Roles.FirstOrDefaultAsync(r => r.Name == RoleEnum.Admin.ToString());
+    //    if (!await context.Users.AnyAsync())
+    //    {
+    //        var adminId = Guid.NewGuid();
+    //        // Get service password from DI and hash password
+    //        var passwordHashService = serviceProvider.GetRequiredService<Contract.Infrastructure.Services.IPasswordHashService>();
 
-            var newPasswordHashed = passwordHashService.HashPassword(adminSetting.Password);
+    //        var newPasswordHashed = passwordHashService.HashPassword(adminSetting.Password);
 
-            // Create admin
-            var admin = User.Create(adminId, adminSetting.Email, newPasswordHashed, adminSetting.FullName, role.Id, userSetting.Avatar.AvatarId, userSetting.Avatar.AvatarUrl);
+    //        // Create admin
+    //        var admin = User.Create(adminId, adminSetting.Email, newPasswordHashed, adminSetting.FullName, role.Id, userSetting.Avatar.AvatarId, userSetting.Avatar.AvatarUrl);
 
-            // And and save in DB
-            context.Users.Add(admin);
-            await context.SaveChangesAsync();
-        }
-    }
+    //        // And and save in DB
+    //        context.Users.Add(admin);
+    //        await context.SaveChangesAsync();
+    //    }
+    //}
 }

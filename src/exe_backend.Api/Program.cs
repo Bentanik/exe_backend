@@ -1,10 +1,13 @@
 using exe_backend.Api.DepedencyInjection.Extensions;
 using exe_backend.Application.Workers;
+using exe_backend.Contract.Common.Constants;
+using exe_backend.Contract.Common.Enums;
 using exe_backend.Infrastructure.DepedencyInjection.Extensions;
 using exe_backend.Persistence.DepedencyInjection.Extensions;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http.Features;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,8 +57,9 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 // CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+    options.AddPolicy("AllowSpecificOrigin",
+        policy => policy.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 });
 
 // Configuration send file from form
@@ -88,7 +92,11 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/antiscm-helloworld", (HttpContext context) =>
+{
+    var user = context.User.FindFirstValue("UserId");
+    return Results.Ok(user);
+}).RequireAuthorization("Member");
 
 app.MapCarter();
 
@@ -117,7 +125,7 @@ app.UseHealthChecks("/health",
     });
 
 // CORS
-app.UseCors("AllowAll");
+app.UseCors("AllowSpecificOrigin");
 
 app.UseHttpsRedirection();
 app.Run();

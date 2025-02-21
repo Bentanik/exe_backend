@@ -13,7 +13,7 @@ public sealed class CreateUserCommandHandler
         var roleMember = await unitOfWork.RoleRepository
             .FindSingleAsync(r => r.Name == RoleEnum.Member.ToString());
 
-        var user = MapToUser(command.UserDto, roleMember ,userSetting.Value.Avatar);
+        var user = MapToUser(command.UserDto, roleMember, userSetting.Value.Avatar);
 
         // Save db
         unitOfWork.UserRepository.Add(user);
@@ -29,7 +29,12 @@ public sealed class CreateUserCommandHandler
     {
         var user = Domain.Models.User.Create
         (id: (Guid)userDto.Id!,
-        email: userDto.Email!, fullName: userDto.FullName!, identityId: userDto.IdentityId!, role.Id, avatarSetting.AvatarId, avatarSetting.AvatarUrl);
+         email: userDto.Email!,
+         fullName: userDto.FullName!,
+         identityId: userDto.IdentityId!,
+         roleId: role.Id,
+         avatarSetting.AvatarId,
+         avatarSetting.AvatarUrl);
 
         return user;
     }

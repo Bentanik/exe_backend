@@ -1,5 +1,7 @@
+using System.Data.Entity;
 using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.Services.Course;
+using LinqKit;
 using static exe_backend.Contract.Services.Course.Event;
 
 namespace exe_backend.Application.UseCases.V1.Commands.Course;
@@ -46,6 +48,10 @@ public sealed class CreateCourseCommandHandler
             }
         }
 
+        if (command.ChapterIds != null)
+        {
+            ReferenceToChapter(course, command.ChapterIds);
+        }
 
         // Save database
         unitOfWork.CourseRepository.Add(course);
@@ -69,5 +75,12 @@ public sealed class CreateCourseCommandHandler
          description: createCourseCommand.Description!);
 
         return course;
+    }
+
+    private async void ReferenceToChapter(Domain.Models.Course course, Guid[] chapterIds)
+    {
+        var chapters = await unitOfWork.ChapterRepository.GetChapterNotCourse(chapterIds);
+        
+        course.AssignChapters(chapters);
     }
 }

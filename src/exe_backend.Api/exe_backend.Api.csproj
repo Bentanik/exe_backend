@@ -15,8 +15,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets"
-      Version="1.21.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
     <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
@@ -34,10 +33,6 @@
     <ProjectReference Include="..\exe_backend.Infrastructure\exe_backend.Infrastructure.csproj" />
     <ProjectReference Include="..\exe_backend.Persistence\exe_backend.Persistence.csproj" />
     <ProjectReference Include="..\exe_backend.Presentation\exe_backend.Presentation.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DepedencyInjection\Extensions\" />
   </ItemGroup>
 
 </Project>

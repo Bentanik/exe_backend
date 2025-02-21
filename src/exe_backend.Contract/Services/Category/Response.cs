@@ -5,8 +5,8 @@ namespace exe_backend.Contract.Services.Category;
 public static class Response
 {
     public record CategoryResponse
-        (CategoryDTO CategoryDto);
+        (CategoryDTO Category);
 
     public record CategoriesResponse
-     (PagedResult<CategoryDTO> CategoryDtos);
+     (PagedResult<CategoryDTO> Categories);
 }

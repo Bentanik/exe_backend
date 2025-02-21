@@ -53,4 +53,9 @@ public class Course : DomainEntity<Guid>
     {
         Level = level;
     }
+
+    public void AssignChapters(ICollection<Chapter> chapters)
+    {
+        Chapters = chapters;
+    }
 }

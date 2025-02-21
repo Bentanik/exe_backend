@@ -12,12 +12,12 @@ public sealed class CreateChapterCommandHandler
         var course = await unitOfWork.CourseRepository.FindSingleAsync(c => c.Id == command.ChapterDTO.CourseId);
 
         var chapter = MapToChapter(command, course);
-        
+
         unitOfWork.ChapterRepository.Add(chapter);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         return Result.Success(new Success(
-            CourseMessage.CreateChapterSuccessfully.GetMessage().Code, 
+            CourseMessage.CreateChapterSuccessfully.GetMessage().Code,
             CourseMessage.CreateChapterSuccessfully.GetMessage().Message));
     }
 
@@ -32,7 +32,8 @@ public sealed class CreateChapterCommandHandler
             description: createChapterCommand.ChapterDTO.Description!
         );
 
-        chapter.AssignToCourse(course);
+        if (course != null)
+            chapter.AssignToCourse(course);
 
         return chapter;
     }

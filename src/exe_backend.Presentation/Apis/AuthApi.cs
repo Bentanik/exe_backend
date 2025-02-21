@@ -1,4 +1,3 @@
-using exe_backend.Contract.Common.Constants;
 using exe_backend.Contract.Common.Messages;
 using exe_backend.Contract.Services.Auth;
 using exe_backend.Contract.Settings;
@@ -39,7 +38,7 @@ public static class AuthApi
         if (result.IsFailure)
             return HandlerFailure(result);
 
-        // var value = result.Value;
+        var value = result.Value;
 
         // var refreshTokenExpMinute = AuthSetting.Value.RefreshTokenExpMinute;
 
@@ -59,10 +58,7 @@ public static class AuthApi
         //         RefreshToken = null // Remove refresh token when return
         //     }
         // };
-
-        // return Results.Ok(loginDto);
-
-        return Results.Ok(result);
+        return Results.Ok(value.Data.LoginDto);
     }
 
     private static async Task<IResult> HandleRefreshTokenAsync

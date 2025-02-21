@@ -1,8 +1,9 @@
 using System.Security.Claims;
-using System.Text;
 using exe_backend.Contract.Common.Enums;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 
 namespace exe_backend.Api.DepedencyInjection.Extensions;
 
@@ -18,7 +19,8 @@ public static class ServiceCollectionExtensions
             .Configure<UserSetting>(configuration.GetSection(UserSetting.SectionName))
             .Configure<AdminSetting>(configuration.GetSection(AdminSetting.SectionName))
             .Configure<ClientSetting>(configuration.GetSection(ClientSetting.SectionName))
-            .Configure<PayOSSetting>(configuration.GetSection(PayOSSetting.SectionName));
+            .Configure<PayOSSetting>(configuration.GetSection(PayOSSetting.SectionName))
+            .Configure<FirebaseSetting>(configuration.GetSection(FirebaseSetting.SectionName));
 
         return services;
     }
@@ -26,48 +28,16 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddAuthenticationAndAuthorization(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSignalR()
-          .AddJsonProtocol(options =>
-          {
-              options.PayloadSerializerOptions.PropertyNamingPolicy = null;
-          });
-
         var authSetting = new AuthSetting();
         configuration.GetSection(AuthSetting.SectionName).Bind(authSetting);
 
-
-        services.AddAuthentication(options =>
+        services.AddSingleton(FirebaseApp.Create(new AppOptions
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-       .AddJwtBearer(options =>
-       {
-           options.SaveToken = true;
-           options.TokenValidationParameters = new TokenValidationParameters
-           {
-               ValidateIssuer = false,
-               ValidateAudience = false,
-               ValidateLifetime = true,
-               ValidateIssuerSigningKey = true,
-               ValidIssuer = authSetting.Issuer,
-               ValidAudience = authSetting.Audience,
-               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSetting.AccessSecretToken)),
-               ClockSkew = TimeSpan.Zero
-           };
+            Credential = GoogleCredential.FromFile(configuration["FirebaseSetting:PrivateKey"])
+        }));
 
-           options.Events = new JwtBearerEvents
-           {
-               OnAuthenticationFailed = context =>
-               {
-                   if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                   {
-                       context.Response.Headers.Add("IS-TOKEN-EXPIRED", "true");
-                   }
-                   return Task.CompletedTask;
-               },
-           };
-       });
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddScheme<AuthenticationSchemeOptions, FirebaseAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme, (o) => { });
 
         services.AddAuthorization(options =>
         {

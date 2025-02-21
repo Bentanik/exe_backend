@@ -4,7 +4,6 @@ namespace exe_backend.Application.UseCases.V1.Commands.Auth;
 
 public sealed class ChangePasswordCommandHandler
     (ITokenGeneratorService tokenGeneratorService,
-    IPasswordHashService passwordHashService,
     IUnitOfWork unitOfWork)
     : ICommandHandler<Command.ChangePasswordCommand>
 {
@@ -26,7 +25,7 @@ public sealed class ChangePasswordCommandHandler
             throw new AuthException.UserNotExistException();
         
         // Hash password
-        var newHashPassword = passwordHashService.HashPassword(command.NewPassword);
+        //var newHashPassword = passwordHashService.HashPassword(command.NewPassword);
         
         // Update user
         // user.Update(password: newHashPassword);

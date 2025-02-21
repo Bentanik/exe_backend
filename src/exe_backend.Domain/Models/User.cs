@@ -6,7 +6,7 @@ public class User : DomainEntity<Guid>
 {
     public string Email { get; private set; } = default!;
     public string FullName { get; private set; } = default!;
-    public string IdentityId {get;private set;} = default!;
+    public string IdentityId { get; private set; } = default!;
     public string? PublicAvatarId { get; private set; }
     public string? PublicAvatarUrl { get; private set; }
 

@@ -6,7 +6,7 @@ public static class Query
 
     public record GetCourseByIdQuery(Guid? CourseId, string?[] IncludesProperty, Guid? UserId = null) : IQuery<Success<Response.CourseResponse>>;
 
-    public record GetChaptersQuery(string? SearchTerm, string? SortColumn, SortOrder? SortOrder, string?[] IncludesProperty, int PageIndex, int PageSize) : IQuery<Success<Response.ChaptersResponse>>;
+    public record GetChaptersQuery(string? SearchTerm, string? SortColumn, SortOrder? SortOrder, string?[] IncludesProperty, int PageIndex, int PageSize, bool? NoneAssignedCourse = false) : IQuery<Success<Response.ChaptersResponse>>;
 
     public record GetChapterByIdQuery(Guid? ChapterId, string?[] IncludesProperty) : IQuery<Success<Response.ChapterResponse>>;
 
