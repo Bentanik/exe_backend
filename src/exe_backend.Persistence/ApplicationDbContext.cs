@@ -19,4 +19,9 @@ public sealed class ApplicationDbContext :
     public DbSet<Course> Courses { get; set; }
     public DbSet<Chapter> Chapters { get; set; }
     public DbSet<Lecture> Lectures { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Level> Levels { get; set; }
+    public DbSet<Subscription> Subscriptions { get; set; }
+    public DbSet<SubscriptionPackage> SubscriptionPackages { get; set; }
+
 }

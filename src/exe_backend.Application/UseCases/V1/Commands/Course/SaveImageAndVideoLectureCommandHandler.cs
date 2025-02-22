@@ -3,19 +3,17 @@ using exe_backend.Domain.ValueObjects;
 
 namespace exe_backend.Application.UseCases.V1.Commands.Course;
 
-public sealed class SaveImageAndVideoLectureCommandHandler
+public sealed class SaveImageLectureCommandHandler
     (IUnitOfWork unitOfWork)
-    : ICommandHandler<Command.SaveImageAndVideoLectureCommand>
+    : ICommandHandler<Command.SaveImageLectureCommand>
 {
-    public async Task<Result> Handle(Command.SaveImageAndVideoLectureCommand command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(Command.SaveImageLectureCommand command, CancellationToken cancellationToken)
     {
         var lecture = await unitOfWork.LectureRepository.FindSingleAsync(c => c.Id == command.LectureDTO.Id);
 
         var imageLecture = Image.Of(command.LectureDTO.ImageLecture!.PublicId!, command.LectureDTO.ImageLecture.PublicUrl!);
 
-        var videoLecture = Video.Of(command.LectureDTO.VideoLecture!.PublicId!, (double)command.LectureDTO.VideoLecture.Duration!);
-
-        lecture.Update(imageLecture: imageLecture, videoLecture: videoLecture);
+        lecture.Update(imageLecture: imageLecture);
         
         // Save database
         unitOfWork.LectureRepository.Update(lecture);

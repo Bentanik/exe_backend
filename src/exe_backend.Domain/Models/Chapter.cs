@@ -11,7 +11,7 @@ public class Chapter : DomainEntity<Guid>
 
     [JsonIgnore]
     public Course? Course { get; set; } = default!;
-    
+
     [JsonIgnore]
     public ICollection<Lecture> Lectures { get; set; } = [];
     public int QuantityLectures
@@ -43,5 +43,10 @@ public class Chapter : DomainEntity<Guid>
             throw new CourseException.CourseNotFoundException();
 
         CourseId = course.Id;
+    }
+
+    public void AssignToLecture(ICollection<Lecture> lectures)
+    {
+        Lectures = lectures;
     }
 }

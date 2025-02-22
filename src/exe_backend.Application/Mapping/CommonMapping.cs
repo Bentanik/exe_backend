@@ -1,3 +1,4 @@
+using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.DTOs.MediaDTOs;
 using exe_backend.Domain.ValueObjects;
 
@@ -17,5 +18,12 @@ public class MappingConfig
             .Map(dest => dest.PublicId, src => src.PublicId)
             .Map(dest => dest.Duration, src => src.Duration);
 
+        TypeAdapterConfig<Course, CourseDTO>.NewConfig()
+            .Map(dest => dest.Category, src => src.Category)
+            .Map(dest => dest.Level, src => src.Level)
+            .Map(dest => dest.Chapters, src => src.Chapters);
+
+        TypeAdapterConfig<Chapter, ChapterDTO>.NewConfig()
+            .Map(dest => dest.Lectures, src => src.Lectures);
     }
 }

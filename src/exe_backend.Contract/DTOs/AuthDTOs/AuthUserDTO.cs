@@ -2,6 +2,7 @@
 public record AuthUserDTO(
     string? Email = null,
     string? FullName = null,
-    string? AvatarUrl = null
+    string? AvatarUrl = null,
+    string? RoleName = null
 );
 

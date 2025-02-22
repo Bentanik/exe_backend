@@ -1,4 +1,3 @@
-using exe_backend.Contract.Common.Enums;
 using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.Services.Course;
 
@@ -19,18 +18,19 @@ public sealed class GetChaptersQueryHandler
                     };
                 }).ToArray();
 
-
         //Find sort property without Id
+
         var chaptersQuery = string.IsNullOrWhiteSpace(query.SearchTerm)
-            ? unitOfWork.ChapterRepository.FindAll(includeProperties: includes) : Guid.TryParse(query.SearchTerm, out Guid courseId)
+            ? unitOfWork.ChapterRepository.FindAll(x => (query.NoneAssignedCourse == true ? x.CourseId == null : true) ,includeProperties: includes) : Guid.TryParse(query.SearchTerm, out Guid courseId)
                 ? unitOfWork.ChapterRepository.FindAll(
-                    x => x.CourseId == courseId,
+                    x => (query.NoneAssignedCourse == true ? x.Course == null : x.CourseId == courseId),
                     includeProperties: includes
                 )
                 : unitOfWork.ChapterRepository.FindAll(
-                    x => x.Name.Contains(query.SearchTerm),
+                    x =>(x.Name.Contains(query.SearchTerm) && (query.NoneAssignedCourse == true ? x.CourseId == null : true)),
                     includeProperties: includes
                 );
+
         // Get sort follow property
         Expression<Func<Domain.Models.Chapter, object>> keySelector = query.SortColumn?.ToLower() switch
         {

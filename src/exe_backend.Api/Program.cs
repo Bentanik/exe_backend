@@ -1,12 +1,13 @@
-using System.Reflection;
-using CloudinaryDotNet;
 using exe_backend.Api.DepedencyInjection.Extensions;
+using exe_backend.Application.Workers;
+using exe_backend.Contract.Common.Constants;
+using exe_backend.Contract.Common.Enums;
 using exe_backend.Infrastructure.DepedencyInjection.Extensions;
-using exe_backend.Infrastructure.Masstransit;
 using exe_backend.Persistence.DepedencyInjection.Extensions;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http.Features;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,9 @@ builder.Services
 
 // Configure appsettings
 builder.Services.AddConfigurationAppSetting(builder.Configuration);
+
+// Configure Auth
+builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
 
 // Register MediatR
 builder.Services.AddConfigureMediatR();
@@ -53,8 +57,9 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 // CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+    options.AddPolicy("AllowSpecificOrigin",
+        policy => policy.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 });
 
 // Configuration send file from form
@@ -70,18 +75,28 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 
+// Configuration Worker subscription
+builder.Services.AddHostedService<SubscriptionCleanupWorker>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    // Seed database
+    await app.InitialiseDatabaseAsync(builder.Configuration, builder.Services.BuildServiceProvider());
 }
-// Seed database
-await app.InitialiseDatabaseAsync();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.MapGet("/", () => "Hello World!");
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapGet("/antiscm-helloworld", (HttpContext context) =>
+{
+    var user = context.User.FindFirstValue("UserId");
+    return Results.Ok(user);
+}).RequireAuthorization("Member");
 
 app.MapCarter();
 
@@ -91,6 +106,18 @@ app.NewVersionedApi("Authentication")
 app.NewVersionedApi("Course")
     .MapCourseApiV1();
 
+app.NewVersionedApi("Category")
+    .MapCategoryApiV1();
+
+app.NewVersionedApi("Level")
+    .MapLevelApiV1();
+
+app.NewVersionedApi("User")
+    .MapUserApiV1();
+
+app.NewVersionedApi("Subscription")
+    .MapSubscriptionApiV1();
+
 app.UseHealthChecks("/health",
     new HealthCheckOptions
     {
@@ -98,7 +125,7 @@ app.UseHealthChecks("/health",
     });
 
 // CORS
-app.UseCors("AllowAll");
+app.UseCors("AllowSpecificOrigin");
 
 app.UseHttpsRedirection();
 app.Run();

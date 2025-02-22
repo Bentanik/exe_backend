@@ -26,10 +26,11 @@ public static class ServiceCollectionExtensions
     {
         services.AddMessageBroker(configuration, Assembly.GetExecutingAssembly());
 
-        services.AddScoped<IPasswordHashService, PasswordHashService>()
-                .AddScoped<IEmailService, EmailService>()
+        services.AddScoped<IEmailService, EmailService>()
                 .AddScoped<ITokenGeneratorService, TokenGeneratorService>()
-                .AddScoped<IMediaService, MediaService>();
+                .AddScoped<IMediaService, MediaService>()
+                .AddScoped<IPaymentService, PaymentService>()
+                .AddSingleton<IFirebaseAuthService, FirebaseAuthService>();
 
         return services;
     }

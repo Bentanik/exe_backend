@@ -1,6 +1,6 @@
-using exe_backend.Contract.Common.Enums;
 using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.Services.Course;
+using Firebase.Auth;
 
 namespace exe_backend.Presentation.Apis;
 
@@ -11,14 +11,32 @@ public static class CourseApi
     {
         var group = builder.MapGroup(BaseUrl).HasApiVersion(1);
 
-        group.MapPost("create-course", HandleCreateCourseAsync);
+        // Role Admin
+        group.MapPost("create-course", HandleCreateCourseAsync).RequireAuthorization(RoleEnum.Admin.ToString());
+
         group.MapPost("create-chapter", HandleCreateChapterAsync);
+        // .RequireAuthorization(RoleEnum.Admin.ToString());
+
         group.MapPost("create-lecture", HandleCreateLectureAsync);
+        // .RequireAuthorization(RoleEnum.Admin.ToString());
+
         group.MapGet("get-courses", HandleGetCoursesAsync);
+
         group.MapGet("get-course-by-id", HandleGetCourseByIdAsync);
+
         group.MapGet("get-chapters", HandleGetChaptersAsync);
-        group.MapGet("get-chapter-by-id", HandleGetChapterByIdAsync);
+
+        group.MapGet("get-chapter-by-id", HandleGetChapterByIdAsync)
+        .RequireAuthorization(RoleEnum.Admin.ToString());
+
         group.MapGet("get-lectures", HandleGetLecturesAsync);
+        // .RequireAuthorization(RoleEnum.Admin.ToString());
+
+        group.MapGet("get-lecture-by-id", HandleGetLectureByIdAsync)
+        .RequireAuthorization(RoleEnum.AdminAndMember.ToString());
+
+        // Role User
+        // group.MapGet("get-chapter-by-id")
         return builder;
     }
 
@@ -33,8 +51,15 @@ public static class CourseApi
         var name = form["Name"];
         var description = form["Description"];
         var thumbnailFile = form.Files["ThumbnailFile"];
+        var categoryId = form["CategoryId"];
+        var levelId = form["LevelId"];
+        var chapterIds = form["ChapterId"].Select(Guid.Parse).ToArray();
 
-        var request = new Command.CreateCourseCommand(name, description, thumbnailFile);
+        _ = Guid.TryParse(categoryId, out Guid categoryIdParsed);
+
+        _ = Guid.TryParse(levelId, out Guid levelIdParsed);
+
+        var request = new Command.CreateCourseCommand(name, description, thumbnailFile, categoryIdParsed, levelIdParsed, chapterIds);
 
         var result = await sender.Send(request);
 
@@ -65,13 +90,13 @@ public static class CourseApi
         {
             Name = form["Name"],
             ChapterId = string.IsNullOrWhiteSpace(form["ChapterId"]) ? null : Guid.Parse(form["ChapterId"]),
+            VideoLecture = new Contract.DTOs.MediaDTOs.VideoDTO(form["PublicVideoId"], Double.Parse(form["DurationVideo"])),
             Description = form["Description"]
         };
 
         var imageFile = form.Files["ImageFile"];
-        var videoFile = form.Files["VideoFile"];
 
-        var request = new Command.CreateLectureCommand(lectureDto, imageFile!, videoFile!);
+        var request = new Command.CreateLectureCommand(lectureDto, imageFile!);
 
         var result = await sender.Send(request);
 
@@ -79,6 +104,8 @@ public static class CourseApi
             return HandlerFailure(result);
 
         return Results.Ok(result);
+
+        return Results.Ok("123");
     }
 
     private static async Task<IResult> HandleGetCoursesAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null)
@@ -92,7 +119,8 @@ public static class CourseApi
         return Results.Ok(result);
     }
 
-    private static async Task<IResult> HandleGetCourseByIdAsync(ISender sender, [FromQuery] string courseId, [FromQuery] string[]? includes = null)
+    private static async Task<IResult> HandleGetCourseByIdAsync(ISender sender,
+    HttpContext context, [FromQuery] string courseId, [FromQuery] string[]? includes = null)
     {
         Guid? courseIdParsed = null;
         if (!string.IsNullOrEmpty(courseId))
@@ -104,18 +132,41 @@ public static class CourseApi
             courseIdParsed = parsedId;
         }
 
-        var result = await sender.Send(new Query.GetCourseByIdQuery(courseIdParsed, includes));
+        _ = Guid.TryParse(context.User.FindFirstValue(AuthConstant.UserId), out Guid userId);
+
+        var result = await sender.Send(new Query.GetCourseByIdQuery(courseIdParsed, includes, userId == Guid.Empty ? null : userId));
         if (result.IsFailure)
             return HandlerFailure(result);
 
         return Results.Ok(result);
     }
 
-    private static async Task<IResult> HandleGetChaptersAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null)
+    private static async Task<IResult> HandleGetLectureByIdAsync(ISender sender, HttpContext context, [FromQuery] string lectureId, [FromQuery] string[]? includes = null)
+    {
+        _ = Guid.TryParse(context.User.FindFirstValue(AuthConstant.UserId), out Guid userId);
+
+        Guid? lectureIdParsed = null;
+        if (!string.IsNullOrEmpty(lectureId))
+        {
+            if (!Guid.TryParse(lectureId, out var parsedId))
+            {
+                return Results.BadRequest("Invalid lecture ID format.");
+            }
+            lectureIdParsed = parsedId;
+        }
+
+        var result = await sender.Send(new Query.GetLectureByIdQuery(userId,lectureIdParsed, includes));
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleGetChaptersAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null, bool? NoneAssignedCourse = false)
     {
         var sort = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.Equals("Asc") ? SortOrder.Ascending : SortOrder.Descending : SortOrder.Descending;
 
-        var result = await sender.Send(new Query.GetChaptersQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize));
+        var result = await sender.Send(new Query.GetChaptersQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize, NoneAssignedCourse));
         if (result.IsFailure)
             return HandlerFailure(result);
 
@@ -141,16 +192,17 @@ public static class CourseApi
         return Results.Ok(result);
     }
 
-    private static async Task<IResult> HandleGetLecturesAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null)
+    private static async Task<IResult> HandleGetLecturesAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null, bool? NoneAssignedChapter = false)
     {
         var sort = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.Equals("Asc") ? SortOrder.Ascending : SortOrder.Descending : SortOrder.Descending;
 
-        var result = await sender.Send(new Query.GetLecturesQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize));
+        var result = await sender.Send(new Query.GetLecturesQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize, NoneAssignedChapter));
         if (result.IsFailure)
             return HandlerFailure(result);
 
         return Results.Ok(result);
     }
+
 
     private static IResult HandlerFailure(Result result) =>
       result switch

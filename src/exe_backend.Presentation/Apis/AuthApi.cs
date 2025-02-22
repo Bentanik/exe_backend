@@ -1,4 +1,3 @@
-using exe_backend.Contract.Common.Constants;
 using exe_backend.Contract.Common.Messages;
 using exe_backend.Contract.Services.Auth;
 using exe_backend.Contract.Settings;
@@ -41,26 +40,25 @@ public static class AuthApi
 
         var value = result.Value;
 
-        var refreshTokenExpMinute = AuthSetting.Value.RefreshTokenExpMinute;
+        // var refreshTokenExpMinute = AuthSetting.Value.RefreshTokenExpMinute;
 
-        httpContext.Response.Cookies.Append(AuthConstant.RefreshToken,
-            value.Data.LoginDto.AuthTokenDTO.RefreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
-                Expires = DateTime.Now.AddMinutes(refreshTokenExpMinute),
-            });
+        // httpContext.Response.Cookies.Append(AuthConstant.RefreshToken,
+        //     value.Data.LoginDto.AuthTokenDTO.RefreshToken, new CookieOptions
+        //     {
+        //         HttpOnly = true,
+        //         Secure = true,
+        //         SameSite = SameSiteMode.None,
+        //         Expires = DateTime.Now.AddMinutes(refreshTokenExpMinute),
+        //     });
 
-        var loginDto = value.Data.LoginDto with
-        {
-            AuthTokenDTO = value.Data.LoginDto.AuthTokenDTO with
-            {
-                RefreshToken = null // Remove refresh token when return
-            }
-        };
-
-        return Results.Ok(loginDto);
+        // var loginDto = value.Data.LoginDto with
+        // {
+        //     AuthTokenDTO = value.Data.LoginDto.AuthTokenDTO with
+        //     {
+        //         RefreshToken = null // Remove refresh token when return
+        //     }
+        // };
+        return Results.Ok(value.Data.LoginDto);
     }
 
     private static async Task<IResult> HandleRefreshTokenAsync

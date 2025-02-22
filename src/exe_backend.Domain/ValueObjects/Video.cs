@@ -2,6 +2,7 @@ namespace exe_backend.Domain.ValueObjects;
 
 public record Video
 {
+    // PublicId of Youtube
    public Video(string publicId, double duration)
     {
         PublicId = publicId;

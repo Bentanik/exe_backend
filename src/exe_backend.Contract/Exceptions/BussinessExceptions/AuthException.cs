@@ -51,4 +51,12 @@ public static class AuthException
                     AuthMessage.LoginTokenExpiredException.GetMessage().Code)
         { }
     }
+
+    public sealed class LoginWithEmailAndPasswordException : BadRequestException
+    {
+        public LoginWithEmailAndPasswordException()
+                : base(AuthMessage.LoginWithEmailAndPasswordFail.GetMessage().Message,
+                    AuthMessage.LoginWithEmailAndPasswordFail.GetMessage().Code)
+        { }
+    }
 }

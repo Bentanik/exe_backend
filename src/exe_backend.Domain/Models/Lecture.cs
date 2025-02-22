@@ -30,10 +30,9 @@ public class Lecture : DomainEntity<Guid>
         return lecture;
     }
 
-    public void Update(Image? imageLecture = null, Video? videoLecture = null)
+    public void Update(Image? imageLecture = null)
     {
         if (imageLecture != null) ImageLecture = imageLecture;
-        if (videoLecture != null) VideoLecture = videoLecture;
     }
 
     public void AssignToChapter(Chapter chapter)

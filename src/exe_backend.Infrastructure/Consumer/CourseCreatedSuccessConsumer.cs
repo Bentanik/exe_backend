@@ -1,4 +1,4 @@
-using exe_backend.Contract.DTOs.MediaDTOs;
+using exe_backend.Contract.Helpers;
 using exe_backend.Contract.Services.Course;
 
 namespace exe_backend.Infrastructure.Consumer;
@@ -14,14 +14,13 @@ public class CourseCreatedSuccessConsumer
         logger.LogInformation("Integration Event handled: {IntegrationEvent}", context.Message.GetType().Name);
 
         var courseCreatedSuccessEvent = context.Message;
-        var filePath = context.Message.FilePath;
+        var thumbnailFilePath = context.Message.ThumbnailFilePath;
         try
         {
-            // Get file from filePath, ex filePath: temp
-            using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            var thumbnailFileStream = FileHelper.MergeToMemoryStream(thumbnailFilePath);
 
             // Upload file
-            var mediaUpploaded = await mediaService.UploadImageAsync(courseCreatedSuccessEvent.CourseDTO.Name!, fileStream);
+            var mediaUpploaded = await mediaService.UploadImageAsync(courseCreatedSuccessEvent.CourseDTO.Name!, thumbnailFileStream);
 
             // CourseDTO
             var courseDto = courseCreatedSuccessEvent.CourseDTO with
@@ -32,15 +31,11 @@ public class CourseCreatedSuccessConsumer
             // Send to save thumbnail course command
             await sender.Send(new Command.SaveThumbnailCourseCommand(courseDto));
 
+            Console.WriteLine($"Complete upload file course {courseDto.Name}");
         }
         catch (Exception ex)
         {
             System.Console.WriteLine(ex.Message.ToString());
-        }
-        finally
-        {
-            File.Delete(filePath);
-            Console.WriteLine($"File {filePath} deleted.");
         }
     }
 }

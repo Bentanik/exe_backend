@@ -21,19 +21,18 @@
     <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols" Version="8.3.0" />
-    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.3.0" />  
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.3.0" />
+    <PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="6.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.7.3" />
   </ItemGroup>
-    
+
   <ItemGroup>
     <ProjectReference Include="..\exe_backend.Application\exe_backend.Application.csproj" />
     <ProjectReference Include="..\exe_backend.Contract\exe_backend.Contract.csproj" />
     <ProjectReference Include="..\exe_backend.Infrastructure\exe_backend.Infrastructure.csproj" />
     <ProjectReference Include="..\exe_backend.Persistence\exe_backend.Persistence.csproj" />
     <ProjectReference Include="..\exe_backend.Presentation\exe_backend.Presentation.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DepedencyInjection\Extensions\" />
   </ItemGroup>
 
 </Project>

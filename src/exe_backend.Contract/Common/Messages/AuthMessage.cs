@@ -37,5 +37,8 @@ public enum AuthMessage
 
     [Message("Đăng xuất thành công", "auth12")]
     LogoutSuccessfully,
+
+    [Message("Sai Email hoặc mật khẩu", "auth13")]
+    LoginWithEmailAndPasswordFail,
 }
 

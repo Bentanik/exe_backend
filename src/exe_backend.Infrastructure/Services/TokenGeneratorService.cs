@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using exe_backend.Contract.Common.Constants;
 using Microsoft.IdentityModel.Tokens;
 
 namespace exe_backend.Infrastructure.Services;
@@ -30,7 +31,7 @@ public sealed class TokenGeneratorService
     public string GenerateAccessToken(Guid userId, string roleName)
     {
         List<Claim> claims = [
-            new Claim("UserId", userId.ToString()),
+            new Claim(AuthConstant.UserId, userId.ToString()),
             new Claim(ClaimTypes.Role, roleName)
         ];
         if (_authSetting.AccessSecretToken != null && _authSetting.Issuer != null && _authSetting.Audience != null)
@@ -47,7 +48,7 @@ public sealed class TokenGeneratorService
     public string GenerateRefreshToken(Guid userId, string roleName)
     {
         List<Claim> claims = [
-            new Claim("UserId", userId.ToString()),
+            new Claim(AuthConstant.UserId, userId.ToString()),
             new Claim(ClaimTypes.Role, roleName)
         ];
         if (_authSetting.RefreshSecretToken != null && _authSetting.Issuer != null && _authSetting.Audience != null)
@@ -64,7 +65,7 @@ public sealed class TokenGeneratorService
     public string GenerateForgotPasswordToken(Guid userId)
     {
         List<Claim> claims = [
-            new Claim("UserId", userId.ToString()),
+            new Claim(AuthConstant.UserId, userId.ToString()),
         ];
         return GenerateToken
             (_authSetting.ForgotPasswordSecretToken,
@@ -92,7 +93,7 @@ public sealed class TokenGeneratorService
         try
         {
             var principal = tokenHandler.ValidateToken(refreshToken, validationParameters, out SecurityToken validatedToken);
-            var userIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "UserId");
+            var userIdClaim = principal.Claims.FirstOrDefault(c => c.Type == AuthConstant.UserId);
 
             return userIdClaim?.Value!;
         }
@@ -120,7 +121,7 @@ public sealed class TokenGeneratorService
         try
         {
             var principal = tokenHandler.ValidateToken(forgotPasswordToken, validationParameters, out SecurityToken validatedToken);
-            var userIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "UserId");
+            var userIdClaim = principal.Claims.FirstOrDefault(c => c.Type == AuthConstant.UserId);
 
             return userIdClaim?.Value!;
         }

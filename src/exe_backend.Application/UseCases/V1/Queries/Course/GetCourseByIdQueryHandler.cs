@@ -14,6 +14,8 @@ public sealed class GetCourseByIdQueryHandler
            return include switch
            {
                "Chapter" => (Expression<Func<Domain.Models.Course, object>>)(c => c.Chapters),
+               "Category" => (Expression<Func<Domain.Models.Course, object>>)(c => c.Category),
+               "Level" => (Expression<Func<Domain.Models.Course, object>>)(c => c.Level),
                _ => throw new ArgumentException($"Unknown navigation property: {include}")
            };
        }).ToArray();

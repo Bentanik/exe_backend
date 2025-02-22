@@ -9,15 +9,20 @@ public sealed class CreateChapterCommandHandler
     public async Task<Result> Handle(Command.CreateChapterCommand command, CancellationToken cancellationToken)
     {
         // Find course
-        var course = await unitOfWork.CourseRepository.FindSingleAsync(c => c.Id == command.ChapterDTO.CourseId);
+        var course = await unitOfWork.CourseRepository.FindSingleAsync(c => c.Id == command.CourseId);
 
         var chapter = MapToChapter(command, course);
-        
+
+        if (command.LectureIds != null)
+        {
+            ReferenceToLecture(chapter, command.LectureIds);
+        }
+
         unitOfWork.ChapterRepository.Add(chapter);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         return Result.Success(new Success(
-            CourseMessage.CreateChapterSuccessfully.GetMessage().Code, 
+            CourseMessage.CreateChapterSuccessfully.GetMessage().Code,
             CourseMessage.CreateChapterSuccessfully.GetMessage().Message));
     }
 
@@ -28,12 +33,20 @@ public sealed class CreateChapterCommandHandler
         var chapter = Chapter.Create
         (
             id: chapterId,
-            name: createChapterCommand.ChapterDTO.Name!,
-            description: createChapterCommand.ChapterDTO.Description!
+            name: createChapterCommand.Name!,
+            description: createChapterCommand.Description!
         );
 
-        chapter.AssignToCourse(course);
+        if (course != null)
+            chapter.AssignToCourse(course);
 
         return chapter;
+    }
+
+    private async void ReferenceToLecture(Domain.Models.Chapter chapter, Guid[] lectureIds)
+    {
+        var lectures = await unitOfWork.LectureRepository.GetLecturesNotChapterAsync(lectureIds);
+
+        chapter.AssignToLecture(lectures);
     }
 }
