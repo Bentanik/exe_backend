@@ -12,5 +12,5 @@ public static class Query
 
     public record GetLecturesQuery(string? SearchTerm, string? SortColumn, SortOrder? SortOrder, string?[] IncludesProperty, int PageIndex, int PageSize, bool? NoneAssignedChapter = false) : IQuery<Success<Response.LecturesResponse>>;
 
-    public record GetLectureByIdQuery(Guid? LectureId, string?[] IncludesProperty) : IQuery<Success<Response.LectureResponse>>;
+    public record GetLectureByIdQuery(Guid UserId, Guid? LectureId, string?[] IncludesProperty) : IQuery<Success<Response.LectureResponse>>;
 }

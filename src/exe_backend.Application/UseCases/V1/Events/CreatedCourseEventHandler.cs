@@ -1,4 +1,5 @@
 using exe_backend.Contract.DTOs.CourseDTOs;
+using exe_backend.Contract.Helpers;
 using Microsoft.AspNetCore.Http;
 
 namespace exe_backend.Application.UseCases.V1.Events;
@@ -12,21 +13,14 @@ public sealed class CreateCourseEventHandler
         await SaveThumbnailAsync(notification.CourseDto, notification.ThumbnailFile);
     }
 
-
     private async Task SaveThumbnailAsync(CourseDTO courseDto, IFormFile thumbnailFile)
     {
-        var fileName = $"course_{courseDto.Name}";
-        var tempFilePath = Path.Combine(Path.GetTempPath(), fileName);
+        var imageBytes = await FileHelper.ConvertToByteArrayAsync(thumbnailFile);
 
-        // Save file in temp
-        using (var fileStream = new FileStream(tempFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
-        {
-            await thumbnailFile.CopyToAsync(fileStream);
-        }
         var courseCreatedSuccessEvent = new CourseCreatedSuccessEvent
         {
             CourseDTO = courseDto,
-            FilePath = tempFilePath,
+            ThumbnailFilePath = imageBytes,
         };
 
         await publishEndpoint.Publish(courseCreatedSuccessEvent);

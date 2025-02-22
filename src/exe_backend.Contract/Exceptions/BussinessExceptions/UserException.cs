@@ -27,4 +27,12 @@ public static class UserException
             UserMessage.SubscriptionNotRenewException.GetMessage().Code)
         { }
     }
+
+    public sealed class UserNotRegistPackageException : BadRequestException
+    {
+        public UserNotRegistPackageException()
+            : base(UserMessage.UserNotRegistPackageException.GetMessage().Message,
+            UserMessage.UserNotRegistPackageException.GetMessage().Code)
+        { }
+    }
 }

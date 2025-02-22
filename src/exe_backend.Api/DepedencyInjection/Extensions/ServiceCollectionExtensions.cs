@@ -48,6 +48,13 @@ public static class ServiceCollectionExtensions
             // Member Policy
             options.AddPolicy(RoleEnum.Member.ToString(), policy =>
                 policy.RequireClaim(ClaimTypes.Role, RoleEnum.Member.ToString()).ToString());
+
+            options.AddPolicy(RoleEnum.AdminAndMember.ToString(), policy =>
+               policy.RequireAssertion(context =>
+                   context.User.HasClaim(c => c.Type == ClaimTypes.Role &&
+                       (c.Value == RoleEnum.Member.ToString() ||
+                        c.Value == RoleEnum.Admin.ToString()))
+               ));
         });
 
         return services;

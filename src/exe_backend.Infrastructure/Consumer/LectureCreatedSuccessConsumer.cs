@@ -1,4 +1,4 @@
-using exe_backend.Contract.DTOs.MediaDTOs;
+using exe_backend.Contract.Helpers;
 using exe_backend.Contract.Services.Course;
 
 namespace exe_backend.Infrastructure.Consumer;
@@ -14,49 +14,26 @@ public class LectureCreatedSuccessConsumer
 
         var lectureCreatedSuccessEvent = context.Message;
         var imageFilePath = context.Message.ImageFilePath;
-        var videoFilePath = context.Message.VideoFilePath;
         try
         {
-            var imageUploadTask = UploadImageAsync(lectureCreatedSuccessEvent.LectureDTO.Name!, imageFilePath);
-            var videoUploadTask = UploadVideoAsync(lectureCreatedSuccessEvent.LectureDTO.Name!, videoFilePath);
+            var imageFileStream = FileHelper.MergeToMemoryStream(imageFilePath);
 
-            await Task.WhenAll(imageUploadTask, videoUploadTask);
+            // Upload file
+            var mediaUpploaded = await mediaService.UploadImageAsync(lectureCreatedSuccessEvent.LectureDTO.Name!, imageFileStream);
 
-            var imageDto = await imageUploadTask;
-            var videoDto = await videoUploadTask;
-            // LectureDTO
+            // CourseDTO
             var lectureDto = lectureCreatedSuccessEvent.LectureDTO with
             {
-                ImageLecture = imageDto,
-                VideoLecture = videoDto
+                ImageLecture = mediaUpploaded,
             };
 
-            await sender.Send(new Command.SaveImageAndVideoLectureCommand(lectureDto));
+            await sender.Send(new Command.SaveImageLectureCommand(lectureDto));
+
+            Console.WriteLine($"Complete upload file course {lectureDto.Name}");
         }
         catch (Exception ex)
         {
             System.Console.WriteLine(ex.Message.ToString());
         }
-        finally
-        {
-            File.Delete(imageFilePath);
-            File.Delete(videoFilePath);
-            Console.WriteLine($"File {imageFilePath} deleted.");
-            System.Console.WriteLine($"File {videoFilePath} deleted");
-        }
-    }
-
-    private async Task<ImageDTO> UploadImageAsync(string name, string filePath)
-    {
-        using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-        var uploadedImage = await mediaService.UploadImageAsync(name, fileStream);
-        return uploadedImage;
-    }
-
-    private async Task<VideoDTO> UploadVideoAsync(string name, string filePath)
-    {
-        using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-        var uploadedVideo = await mediaService.UploadVideoAsync(name, fileStream);
-        return uploadedVideo;
     }
 }

@@ -22,5 +22,8 @@ public enum UserMessage
 
     [Message("Bạn đã gia hạn gói Premium cho tài khoản thành công", "user07")]
     SubscriptionRenewSuccessfully,
+
+    [Message("Bạn chưa đăng ký gói để xem video này", "user08")]
+    UserNotRegistPackageException,
 }
 

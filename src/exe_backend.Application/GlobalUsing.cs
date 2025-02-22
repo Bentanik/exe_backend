@@ -20,3 +20,4 @@ global using Microsoft.Extensions.Options;
 global using exe_backend.Contract.IntegrationEvents;
 global using MassTransit;
 global using exe_backend.Contract.Common.Enums;
+global using exe_backend.Contract.Helpers;
