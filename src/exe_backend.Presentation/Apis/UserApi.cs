@@ -23,6 +23,8 @@ public static class UserApi
         group.MapPost("renew-vip", HandleRenewVipAsync)
         .RequireAuthorization(RoleEnum.Member.ToString());
 
+        group.MapGet("get-info-user-by-id", HandleGetInfoUserAsync);
+
         return builder;
     }
 
@@ -85,6 +87,18 @@ public static class UserApi
         if (userId == null || userId == Guid.Empty) throw new AuthException.TokenPasswordExpiredException();
 
         var result = await sender.Send(new Command.RenewVipCommand(userId));
+
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleGetInfoUserAsync(ISender sender, HttpContext context, [FromQuery] string userId, [FromQuery] string[]? includes = null)
+    {
+        // _ = Guid.TryParse(context.User.FindFirstValue(AuthConstant.UserId), out Guid userId);
+
+        var result = await sender.Send(new Query.GetUserByIdQuery(Guid.Parse(userId), includes));
 
         if (result.IsFailure)
             return HandlerFailure(result);

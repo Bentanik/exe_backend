@@ -14,6 +14,7 @@ public sealed class GetChaptersQueryHandler
                     return include switch
                     {
                         "Lecture" => (Expression<Func<Domain.Models.Chapter, object>>)(c => c.Lectures),
+                        "Course" => (Expression<Func<Domain.Models.Chapter, object>>)(c => c.Course),
                         _ => throw new ArgumentException($"Unknown navigation property: {include}")
                     };
                 }).ToArray();
@@ -21,13 +22,13 @@ public sealed class GetChaptersQueryHandler
         //Find sort property without Id
 
         var chaptersQuery = string.IsNullOrWhiteSpace(query.SearchTerm)
-            ? unitOfWork.ChapterRepository.FindAll(x => (query.NoneAssignedCourse == true ? x.CourseId == null : true) ,includeProperties: includes) : Guid.TryParse(query.SearchTerm, out Guid courseId)
+            ? unitOfWork.ChapterRepository.FindAll(x => (query.NoneAssignedCourse == true ? x.CourseId == null : true), includeProperties: includes) : Guid.TryParse(query.SearchTerm, out Guid courseId)
                 ? unitOfWork.ChapterRepository.FindAll(
                     x => (query.NoneAssignedCourse == true ? x.Course == null : x.CourseId == courseId),
                     includeProperties: includes
                 )
                 : unitOfWork.ChapterRepository.FindAll(
-                    x =>(x.Name.Contains(query.SearchTerm) && (query.NoneAssignedCourse == true ? x.CourseId == null : true)),
+                    x => (x.Name.Contains(query.SearchTerm) && (query.NoneAssignedCourse == true ? x.CourseId == null : true)),
                     includeProperties: includes
                 );
 
@@ -46,7 +47,7 @@ public sealed class GetChaptersQueryHandler
 
         var chapterDTOs = pagedResultCourse.Items.Adapt<List<ChapterDTO>>();
 
-        var pagedResultChapterDto = PagedResult<ChapterDTO>.Create(chapterDTOs, pagedResultCourse.PageIndex, pagedResultCourse.PageSize, pagedResultCourse.TotalCount);
+        var pagedResultChapterDto = PagedResult<ChapterDTO>.Create(chapterDTOs, pagedResultCourse.PageIndex, pagedResultCourse.PageSize, pagedResultCourse.TotalCount, pagedResultCourse.TotalPages);
 
         var response = new Contract.Services.Course.Response.ChaptersResponse(pagedResultChapterDto);
 

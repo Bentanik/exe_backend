@@ -39,7 +39,7 @@ public sealed class GetCoursesQueryHandler
 
         var courseDtos = pagedResultCourse.Items.Adapt<List<CourseDTO>>();
 
-        var pagedResultCourseDto = PagedResult<CourseDTO>.Create(courseDtos, pagedResultCourse.PageIndex, pagedResultCourse.PageSize, pagedResultCourse.TotalCount);
+        var pagedResultCourseDto = PagedResult<CourseDTO>.Create(courseDtos, pagedResultCourse.PageIndex, pagedResultCourse.PageSize, pagedResultCourse.TotalCount, pagedResultCourse.TotalPages);
 
         var response = new Contract.Services.Course.Response.CoursesResponse(pagedResultCourseDto);
 

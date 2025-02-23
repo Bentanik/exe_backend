@@ -24,6 +24,7 @@ public class MappingConfig
             .Map(dest => dest.Chapters, src => src.Chapters);
 
         TypeAdapterConfig<Chapter, ChapterDTO>.NewConfig()
-            .Map(dest => dest.Lectures, src => src.Lectures);
+            .Map(dest => dest.Lectures, src => src.Lectures)
+            .Map(dest => dest.Course, src => src.Course);
     }
 }

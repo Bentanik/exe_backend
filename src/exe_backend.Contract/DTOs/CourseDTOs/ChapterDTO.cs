@@ -8,5 +8,6 @@ public record ChapterDTO
     string? Description = null,
     int? QuantityLectures = null,
     double? TotalDurationLectures = null,
+    CourseNoChapterDTO? Course = null,
     LectureWithoutMediaDTO[]? Lectures = null
 );

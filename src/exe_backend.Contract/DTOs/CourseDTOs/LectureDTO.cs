@@ -7,5 +7,6 @@ public record LectureDTO
     string? Name = null,
     string? Description = null,
     ImageDTO? ImageLecture = null,
-    VideoDTO? VideoLecture = null
+    VideoDTO? VideoLecture = null,
+    ChapterWithNotLectureDTO? Chapter = null
 );

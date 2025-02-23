@@ -25,5 +25,8 @@ public enum UserMessage
 
     [Message("Bạn chưa đăng ký gói để xem video này", "user08")]
     UserNotRegistPackageException,
+
+    [Message("Lấy thông tin người dùng thành công", "user09")]
+    GetInfoUserSuccessfully,
 }
 
