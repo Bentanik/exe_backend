@@ -5,17 +5,19 @@ public class PagedResult<T>
     public const int UpperPageSize = 100;
     public const int DefaultPageSize = 10;
     public const int DefaultPageIndex = 1;
-    private PagedResult(List<T> items, int pageIndex, int pageSize, int totalCount)
+    private PagedResult(List<T> items, int pageIndex, int pageSize, int totalCount, int? totalPages = 0)
     {
         Items = items;
         PageIndex = pageIndex;
         PageSize = pageSize;
         TotalCount = totalCount;
+        TotalPages = totalPages;
     }
     public List<T> Items { get; }
     public int PageIndex { get; }
     public int PageSize { get; }
     public int TotalCount { get; }
+    public int? TotalPages { get; }
     public bool HasNextPage => PageIndex * PageSize < TotalCount;
     public bool HasPreviousPage => PageIndex > 1;
 
@@ -28,10 +30,13 @@ public class PagedResult<T>
             ? UpperPageSize : pageSize;
 
         var totalCount = await query.CountAsync();
+
+        int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
         var items = await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
-        return new(items, pageIndex, pageSize, totalCount);
+        return new(items, pageIndex, pageSize, totalCount, totalPages);
     }
 
-    public static PagedResult<T> Create(List<T> items, int pageIndex, int pageSize, int totalCount)
-        => new(items, pageIndex, pageSize, totalCount);
+    public static PagedResult<T> Create(List<T> items, int pageIndex, int pageSize, int totalCount, int? totalPages = 0)
+        => new(items, pageIndex, pageSize, totalCount, totalPages);
 }

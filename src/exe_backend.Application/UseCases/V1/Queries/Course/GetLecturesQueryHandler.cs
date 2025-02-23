@@ -9,14 +9,23 @@ public sealed class GetLecturesQueryHandler
 {
     public async Task<Result<Success<Contract.Services.Course.Response.LecturesResponse>>> Handle(Query.GetLecturesQuery query, CancellationToken cancellationToken)
     {
+        var includes = query.IncludesProperty?.Select(include =>
+       {
+           return include switch
+           {
+               "Chapter" => (Expression<Func<Domain.Models.Lecture, object>>)(c => c.Chapter),
+               _ => throw new ArgumentException($"Unknown navigation property: {include}")
+           };
+       }).ToArray();
+
         //Find sort property without Id
         var lecturesQuery = string.IsNullOrWhiteSpace(query.SearchTerm)
-            ? unitOfWork.LectureRepository.FindAll(x => (query.NoneAssignedChapter == true ? x.ChapterId == null : true)) : Guid.TryParse(query.SearchTerm, out Guid chapterId)
+            ? unitOfWork.LectureRepository.FindAll(x => (query.NoneAssignedChapter == true ? x.ChapterId == null : true), includeProperties: includes) : Guid.TryParse(query.SearchTerm, out Guid chapterId)
                 ? unitOfWork.LectureRepository.FindAll(
-                    x => (query.NoneAssignedChapter == true ? x.ChapterId == null : x.ChapterId == chapterId)
+                    x => (query.NoneAssignedChapter == true ? x.ChapterId == null : x.ChapterId == chapterId), includeProperties: includes
                 )
                 : unitOfWork.LectureRepository.FindAll(
-                    x => (x.Name.Contains(query.SearchTerm) && (query.NoneAssignedChapter == true ? x.ChapterId == null : true))
+                    x => (x.Name.Contains(query.SearchTerm) && (query.NoneAssignedChapter == true ? x.ChapterId == null : true)), includeProperties: includes
                 );
         // Get sort follow property
         Expression<Func<Domain.Models.Lecture, object>> keySelector = query.SortColumn?.ToLower() switch
