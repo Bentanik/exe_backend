@@ -13,33 +13,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read # This is required for actions/checkout
+      contents: read #This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
-
-      # Kiểm tra thư mục làm việc hiện tại
-      - name: Print current directory
-        run: pwd
-
-      # Liệt kê các tệp và thư mục để kiểm tra tệp .sln
-      - name: List files to check structure
-        run: ls -R
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
 
-      # Xác minh lại đường dẫn đến solution file và build solution
       - name: Build with dotnet
-        run: dotnet build src/exe_backend.Api/exe_backend.Api.sln --configuration Release
+        run: dotnet build --configuration Release
 
-      # Publish ứng dụng
       - name: dotnet publish
-        run: dotnet publish src/exe_backend.Api/exe_backend.Api.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
-      # Upload artifact cho bước deploy
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -52,13 +41,23 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
       
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_6B6AE10C84394976B26539AC326939FD }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_ADCD677CB663473FB691C5062E916E3D }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5BE03307F4644AF39E7EE468CA9AB3AF }}
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -66,4 +65,4 @@ jobs:
           app-name: 'exeapi'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E4DE348F71FC40AFBF804C83A503517B }}
+          
