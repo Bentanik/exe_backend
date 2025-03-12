@@ -58,7 +58,7 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
-        policy => policy.WithOrigins("http://localhost:3000")
+        policy => policy.WithOrigins("http://localhost:3000", "https://exe02-fe-web.vercel.app")
                     .AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 });
 

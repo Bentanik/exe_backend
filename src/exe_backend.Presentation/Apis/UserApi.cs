@@ -55,7 +55,7 @@ public static class UserApi
         if (result.IsFailure)
             return HandlerFailure(result);
 
-        return Results.Ok(result);
+        return Results.Redirect(result?.Value);
     }
 
     private static async Task<IResult> HandleFailPurcharseVipAsync(ISender sender, HttpContext context, [FromQuery] long orderId)
@@ -65,7 +65,7 @@ public static class UserApi
         if (result.IsFailure)
             return HandlerFailure(result);
 
-        return Results.Ok(result);
+        return Results.Redirect(result?.Value?.FailureUrl);
     }
 
     private static async Task<IResult> HandleCancelVipAsync(ISender sender, HttpContext context)

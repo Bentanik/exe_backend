@@ -23,6 +23,6 @@ public sealed class FailDonateBankingQueryHandler
         await _paymentService.CancelOrder((command.OrderId));
         await _responseCacheService.DeleteCacheResponseAsync($"subscribe_{command.OrderId}");
 
-        return Result.Success(new Contract.Services.User.Response.FailPurcharseVipResponse($"{_clientSetting.Url}{_clientSetting.PurcharseFail}/{command.OrderId}"));
+        return Result.Success(new Contract.Services.User.Response.FailPurcharseVipResponse($"{_clientSetting.Url}{_clientSetting.PurcharseFail}"));
     }
 }
