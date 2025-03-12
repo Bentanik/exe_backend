@@ -12,13 +12,14 @@ public static class CourseApi
         var group = builder.MapGroup(BaseUrl).HasApiVersion(1);
 
         // Role Admin
-        group.MapPost("create-course", HandleCreateCourseAsync).RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapPost("create-course", HandleCreateCourseAsync)
+            .RequireAuthorization(RoleEnum.Admin.ToString());
 
-        group.MapPost("create-chapter", HandleCreateChapterAsync);
-        // .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapPost("create-chapter", HandleCreateChapterAsync)
+            .RequireAuthorization(RoleEnum.Admin.ToString());
 
-        group.MapPost("create-lecture", HandleCreateLectureAsync);
-        // .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapPost("create-lecture", HandleCreateLectureAsync)
+            .RequireAuthorization(RoleEnum.Admin.ToString());
 
         group.MapGet("get-courses", HandleGetCoursesAsync);
 
@@ -26,17 +27,14 @@ public static class CourseApi
 
         group.MapGet("get-chapters", HandleGetChaptersAsync);
 
-        group.MapGet("get-chapter-by-id", HandleGetChapterByIdAsync)
-        .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapGet("get-chapter-by-id", HandleGetChapterByIdAsync);
 
-        group.MapGet("get-lectures", HandleGetLecturesAsync);
-        // .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapGet("get-lectures", HandleGetLecturesAsync)
+            .RequireAuthorization(RoleEnum.AdminAndMember.ToString());
 
         group.MapGet("get-lecture-by-id", HandleGetLectureByIdAsync)
-        .RequireAuthorization(RoleEnum.AdminAndMember.ToString());
+            .RequireAuthorization(RoleEnum.AdminAndMember.ToString());
 
-        // Role User
-        // group.MapGet("get-chapter-by-id")
         return builder;
     }
 

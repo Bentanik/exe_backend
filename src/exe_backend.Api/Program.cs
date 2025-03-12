@@ -86,7 +86,6 @@ if (app.Environment.IsDevelopment())
     // Seed database
     await app.InitialiseDatabaseAsync(builder.Configuration, builder.Services.BuildServiceProvider());
 }
-
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthentication();

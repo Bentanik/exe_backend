@@ -25,6 +25,8 @@ public static class UserApi
 
         group.MapGet("get-info-user-by-id", HandleGetInfoUserAsync);
 
+        group.MapGet("get-bill-by-id", HandleGetBillAsync);
+
         return builder;
     }
 
@@ -87,6 +89,18 @@ public static class UserApi
         if (userId == null || userId == Guid.Empty) throw new AuthException.TokenPasswordExpiredException();
 
         var result = await sender.Send(new Command.RenewVipCommand(userId));
+
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleGetBillAsync(ISender sender, [FromQuery] string billId)
+    {
+        _ = Guid.TryParse(billId, out Guid billIdParase);
+
+        var result = await sender.Send(new Query.GetBillByIdQuery(billIdParase));
 
         if (result.IsFailure)
             return HandlerFailure(result);

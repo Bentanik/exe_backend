@@ -1,4 +1,3 @@
-using exe_backend.Application.UseCases.V1.Events;
 using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.Services.Course;
 
