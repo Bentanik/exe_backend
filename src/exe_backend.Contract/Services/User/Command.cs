@@ -5,7 +5,7 @@ namespace exe_backend.Contract.Services.User;
 public static class Command
 {
     public record CreateUserCommand(UserDto UserDto) : ICommand;
-    public record PurcharseVipCommand(Guid UserId, Guid SubscriptionPackageId)
+    public record PurcharseVipCommand(Guid? UserId, string Description, int Amount)
     : ICommand;
     public record SuccessPurcharseVipCommand(long OrderId) : ICommand<string>;
     public record FailPurcharseVipCommand(long OrderId) : ICommand<Response.FailPurcharseVipResponse>;

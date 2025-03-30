@@ -1,3 +1,4 @@
+using exe_backend.Contract.Abstractions.Shared;
 using exe_backend.Contract.Common.Messages;
 using exe_backend.Contract.Services.Auth;
 using exe_backend.Contract.Settings;

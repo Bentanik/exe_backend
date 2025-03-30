@@ -6,7 +6,7 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable, IDisposable
 {
     private readonly ApplicationDbContext _context;
 
-    public UnitOfWork(ApplicationDbContext context, IUserRepository userRepository, IRoleRepository roleRepository, ICourseRepository courseRepository, IChapterRepository chapterRepository, ILectureRepository lectureRepository, ICategoryRepository categoryRepository, ILevelRepository levelRepository, ISubscriptionRepository subscriptionRepository, ISubscriptionRepositoryPackage subscriptionPackageRepository)
+    public UnitOfWork(ApplicationDbContext context, IUserRepository userRepository, IRoleRepository roleRepository, ICourseRepository courseRepository, IChapterRepository chapterRepository, ILectureRepository lectureRepository, ICategoryRepository categoryRepository, ILevelRepository levelRepository, ISubscriptionRepository subscriptionRepository, ISubscriptionRepositoryPackage subscriptionPackageRepository, IDonateRepository donateRepository)
     {
         _context = context;
         UserRepository = userRepository;
@@ -18,6 +18,7 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable, IDisposable
         LevelRepository = levelRepository;
         SubscriptionRepository = subscriptionRepository;
         SubscriptionPackageRepository = subscriptionPackageRepository;
+        DonateRepository = donateRepository;
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -41,4 +42,5 @@ public class UnitOfWork : IUnitOfWork, IAsyncDisposable, IDisposable
     public ILevelRepository LevelRepository { get; }
     public ISubscriptionRepository SubscriptionRepository { get; }
     public ISubscriptionRepositoryPackage SubscriptionPackageRepository { get; }
+    public IDonateRepository DonateRepository { get; }
 }

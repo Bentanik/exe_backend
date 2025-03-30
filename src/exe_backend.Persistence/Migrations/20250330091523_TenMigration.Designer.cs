@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using exe_backend.Persistence;
 
@@ -11,9 +12,11 @@ using exe_backend.Persistence;
 namespace exe_backend.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250330091523_TenMigration")]
+    partial class TenMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,41 +130,6 @@ namespace exe_backend.Persistence.Migrations
                     b.HasIndex("LevelId");
 
                     b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("exe_backend.Domain.Models.Donate", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("OrderId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Donates");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Lecture", b =>
@@ -413,15 +381,6 @@ namespace exe_backend.Persistence.Migrations
                     b.Navigation("Level");
 
                     b.Navigation("Thumbnail");
-                });
-
-            modelBuilder.Entity("exe_backend.Domain.Models.Donate", b =>
-                {
-                    b.HasOne("exe_backend.Domain.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("exe_backend.Domain.Models.Lecture", b =>

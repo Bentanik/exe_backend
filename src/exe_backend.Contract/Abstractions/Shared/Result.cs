@@ -1,4 +1,4 @@
-﻿namespace exe_backend.Contract.Shared;
+﻿namespace exe_backend.Contract.Abstractions.Shared;
 public class Result
 {
     protected internal Result(bool isSuccess, Error error)

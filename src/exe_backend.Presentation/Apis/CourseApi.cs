@@ -1,3 +1,4 @@
+using exe_backend.Contract.Abstractions.Shared;
 using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.Services.Course;
 using Firebase.Auth;

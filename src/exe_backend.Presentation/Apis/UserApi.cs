@@ -1,5 +1,7 @@
+using exe_backend.Contract.Abstractions.Shared;
 using exe_backend.Contract.Exceptions.BussinessExceptions;
 using exe_backend.Contract.Services.User;
+using static exe_backend.Contract.Services.User.Command;
 
 namespace exe_backend.Presentation.Apis;
 
@@ -30,17 +32,15 @@ public static class UserApi
         return builder;
     }
 
-    private static async Task<IResult> HandlePurcharseVipAsync(ISender sender, HttpContext context, [FromQuery] string subscriptionPackageId)
+    private static async Task<IResult> HandlePurcharseVipAsync(ISender sender, HttpContext context, [FromBody] PurcharseVipCommand request)
     {
         _ = Guid.TryParse(context.User.FindFirstValue(AuthConstant.UserId), out Guid userId);
 
         if (userId == null || userId == Guid.Empty) throw new AuthException.TokenPasswordExpiredException();
 
-        _ = Guid.TryParse(subscriptionPackageId, out Guid subscriptionPackageIdParsed);
-
         if (userId == null || userId == Guid.Empty) throw new Exception("Wrong format");
 
-        var result = await sender.Send(new Command.PurcharseVipCommand(userId, subscriptionPackageIdParsed));
+        var result = await sender.Send(new PurcharseVipCommand(userId, request.Description, request.Amount));
 
         if (result.IsFailure)
             return HandlerFailure(result);

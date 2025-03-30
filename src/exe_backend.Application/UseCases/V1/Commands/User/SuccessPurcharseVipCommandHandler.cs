@@ -14,26 +14,28 @@ public sealed class SuccessPurcharseVipCommandHandler
         // Conver JSON to object
         var purcharseVipCommand = JsonConvert.DeserializeObject<Command.PurcharseVipCommand>(purcharseVipCommandMemory);
 
-        var isCheckSubscription = await unitOfWork.SubscriptionRepository
-            .FindSingleAsync(s => s.UserId == purcharseVipCommand.UserId);
+        //var isCheckSubscription = await unitOfWork.SubscriptionRepository
+        //    .FindSingleAsync(s => s.UserId == purcharseVipCommand.UserId);
 
-        // If Subscription found by UserId have IsActive = true(subscription not expired date) => Exception
-        if (isCheckSubscription != null)
-        {
-            throw new UserException.SubscriptionActivedException();
-        }
+        //// If Subscription found by UserId have IsActive = true(subscription not expired date) => Exception
+        //if (isCheckSubscription != null)
+        //{
+        //    throw new UserException.SubscriptionActivedException();
+        //}
 
-        var subscriptionPackage = await unitOfWork.SubscriptionPackageRepository.
-            FindSingleAsync(sb => sb.Id == purcharseVipCommand.SubscriptionPackageId);
+        //var subscriptionPackage = await unitOfWork.SubscriptionPackageRepository.
+        //    FindSingleAsync(sb => sb.Id == purcharseVipCommand.SubscriptionPackageId);
 
-        var subscription = Domain.Models.Subscription.Create(Guid.NewGuid(), subscriptionPackage, purcharseVipCommand.UserId);
+        //var subscription = Domain.Models.Subscription.Create(Guid.NewGuid(), subscriptionPackage, purcharseVipCommand.UserId);
 
-        unitOfWork.SubscriptionRepository.Add(subscription);
-        
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        //var donate = Domain.Models.Donate.CreateDonate(purcharseVipCommand.)
+        //unitOfWork.SubscriptionRepository.Add(subscription);
 
-        await responseCacheService.DeleteCacheResponseAsync($"subscribe_{command.OrderId}");
-        var result = ClientSetting.Value.Url + "/" + ClientSetting.Value.PurcharseSuccess + "/" + subscription.Id;
-        return Result.Success(result);
+        //await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        //await responseCacheService.DeleteCacheResponseAsync($"subscribe_{command.OrderId}");
+        //var result = ClientSetting.Value.Url + "/" + ClientSetting.Value.PurcharseSuccess + "/" + subscription.Id;
+        //return Result.Success(result);
+        throw new Exception("");
     }
 }

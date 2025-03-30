@@ -9,13 +9,6 @@ public sealed class GetLectureByIdQueryHandler
 {
     public async Task<Result<Success<Contract.Services.Course.Response.LectureResponse>>> Handle(Query.GetLectureByIdQuery query, CancellationToken cancellationToken)
     {
-        var user = await unitOfWork.UserRepository.FindSingleAsync(u => u.Id == query.UserId, includeProperties: u => u.Subscription);
-
-        if (user.Subscription == null)
-        {
-            throw new UserException.UserNotRegistPackageException();
-        }
-
         var includes = query.IncludesProperty?.Select(include =>
         {
             return include switch

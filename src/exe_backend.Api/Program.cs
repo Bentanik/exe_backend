@@ -1,7 +1,5 @@
 using exe_backend.Api.DepedencyInjection.Extensions;
 using exe_backend.Application.Workers;
-using exe_backend.Contract.Common.Constants;
-using exe_backend.Contract.Common.Enums;
 using exe_backend.Infrastructure.DepedencyInjection.Extensions;
 using exe_backend.Persistence.DepedencyInjection.Extensions;
 using HealthChecks.UI.Client;
@@ -76,7 +74,7 @@ builder.WebHost.ConfigureKestrel(options =>
 
 
 // Configuration Worker subscription
-builder.Services.AddHostedService<SubscriptionCleanupWorker>();
+//builder.Services.AddHostedService<SubscriptionCleanupWorker>();
 
 var app = builder.Build();
 
@@ -113,6 +111,9 @@ app.NewVersionedApi("Level")
 
 app.NewVersionedApi("User")
     .MapUserApiV1();
+
+app.NewVersionedApi("Donate")
+    .MapDonateApiV1();
 
 app.NewVersionedApi("Subscription")
     .MapSubscriptionApiV1();

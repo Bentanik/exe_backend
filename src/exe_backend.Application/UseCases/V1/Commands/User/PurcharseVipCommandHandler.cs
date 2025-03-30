@@ -25,33 +25,34 @@ public sealed class PurcharseVipCommandHandler : ICommandHandler<Command.Purchar
 
     public async Task<Result> Handle(Command.PurcharseVipCommand command, CancellationToken cancellationToken)
     {
-        var isCheckSubscription = await _unitOfWork.SubscriptionRepository
-            .FindSingleAsync(s => s.UserId == command.UserId);
+        //var isCheckSubscription = await _unitOfWork.SubscriptionRepository
+        //    .FindSingleAsync(s => s.UserId == command.UserId);
 
-        // If Subscription found by UserId have IsActive = true(subscription not expired date) => Exception
-        if (isCheckSubscription != null)
-        {
-            throw new UserException.SubscriptionActivedException();
-        }
+        //// If Subscription found by UserId have IsActive = true(subscription not expired date) => Exception
+        //if (isCheckSubscription != null)
+        //{
+        //    throw new UserException.SubscriptionActivedException();
+        //}
 
-        var subscriptionPackage = await _unitOfWork.SubscriptionPackageRepository.FindSingleAsync(sb => sb.Id == command.SubscriptionPackageId);
+        //var subscriptionPackage = await _unitOfWork.SubscriptionPackageRepository.FindSingleAsync(sb => sb.Id == command.SubscriptionPackageId);
 
-        if (subscriptionPackage == null)
-        {
-            throw new SubscriptionException.SubscriptionNotFoundException();
-        }
+        //if (subscriptionPackage == null)
+        //{
+        //    throw new SubscriptionException.SubscriptionNotFoundException();
+        //}
 
-        long orderId = new Random().Next(1, 100000);
-        // Create payment dto
-        List<ItemDTO> itemDTOs = [new ItemDTO(subscriptionPackage.Name, 1, subscriptionPackage.Price)];
+        //long orderId = new Random().Next(1, 100000);
+        //// Create payment dto
+        //List<ItemDTO> itemDTOs = [new ItemDTO(subscriptionPackage.Name, 1, subscriptionPackage.Price)];
 
-        var createPaymentDto = new CreatePaymentDTO(orderId, "Đăng ký gói Vip", itemDTOs, _payOSSetting.ErrorUrl + $"?orderId={orderId}", _payOSSetting.SuccessUrl + $"?orderId={orderId}");
+        //var createPaymentDto = new CreatePaymentDTO(orderId, "Ủng hộ chúng tôi", itemDTOs, _payOSSetting.ErrorUrl + $"?orderId={orderId}", _payOSSetting.SuccessUrl + $"?orderId={orderId}");
 
-        var result = await _paymentService.CreatePaymentLink(createPaymentDto);
+        //var result = await _paymentService.CreatePaymentLink(createPaymentDto);
 
-        // Save memory to when success or fail will know value
-        await _responseCacheService.SetCacheResponseAsync($"subscribe_{orderId}", command, TimeSpan.FromMinutes(60));
+        //// Save memory to when success or fail will know value
+        //await _responseCacheService.SetCacheResponseAsync($"subscribe_{orderId}", command, TimeSpan.FromMinutes(60));
 
-        return Result.Success(new Success<CreatePaymentResponseDTO>("", "", result));
+        //return Result.Success(new Success<CreatePaymentResponseDTO>("", "", result));
+        throw new Exception("");
     }
 }

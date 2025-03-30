@@ -14,4 +14,5 @@ public interface IUnitOfWork : IAsyncDisposable, IDisposable
     ILevelRepository LevelRepository { get; }
     ISubscriptionRepository SubscriptionRepository { get; }
     ISubscriptionRepositoryPackage SubscriptionPackageRepository { get; }
+    IDonateRepository DonateRepository { get; }
 }

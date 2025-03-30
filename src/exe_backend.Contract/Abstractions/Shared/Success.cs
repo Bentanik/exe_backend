@@ -1,4 +1,4 @@
-﻿namespace exe_backend.Contract.Shared;
+﻿namespace exe_backend.Contract.Abstractions.Shared;
 
 public class Success : IEquatable<Success>
 {

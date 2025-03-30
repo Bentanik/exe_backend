@@ -23,5 +23,5 @@ public sealed class ApplicationDbContext :
     public DbSet<Level> Levels { get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<SubscriptionPackage> SubscriptionPackages { get; set; }
-
+    public DbSet<Donate> Donates { get; set; }
 }

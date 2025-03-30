@@ -1,3 +1,4 @@
+using exe_backend.Contract.Abstractions.Shared;
 using exe_backend.Contract.Services.Category;
 
 namespace exe_backend.Presentation.Apis;

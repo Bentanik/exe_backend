@@ -49,7 +49,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<ICategoryRepository, CategoryRepository>()
             .AddScoped<ILevelRepository, LevelRepository>()
             .AddScoped<ISubscriptionRepository, SubcriptionRepository>()
-            .AddScoped<ISubscriptionRepositoryPackage, SubscriptionRepositoryPackage>();
+            .AddScoped<ISubscriptionRepositoryPackage, SubscriptionRepositoryPackage>()
+            .AddScoped<IDonateRepository, DonateRepository>();
 
         return services;
     }

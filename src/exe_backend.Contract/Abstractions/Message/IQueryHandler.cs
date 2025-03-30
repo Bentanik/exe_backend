@@ -1,5 +1,4 @@
-﻿using exe_backend.Contract.Shared;
-using MediatR;
+﻿using MediatR;
 
 namespace exe_backend.Contract.Abstractions.Message;
 
