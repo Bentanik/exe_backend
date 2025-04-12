@@ -7,4 +7,5 @@ public static class Response
     public record FailPurcharseVipResponse(string FailureUrl);
     public record GetUserIdResponse(UserDto UserDto);
     public record GetBillIdResponse(string FullName, DateTime DateSubcribe, string NameSubscribe);
+    public record UsersResponse(PagedResult<UserDto> Users);
 }

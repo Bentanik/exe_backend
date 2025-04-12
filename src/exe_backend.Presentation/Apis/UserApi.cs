@@ -29,6 +29,8 @@ public static class UserApi
 
         group.MapGet("get-bill-by-id", HandleGetBillAsync);
 
+        group.MapGet("get-users", HandleGetUsersAsync);
+
         return builder;
     }
 
@@ -90,6 +92,17 @@ public static class UserApi
 
         var result = await sender.Send(new Command.RenewVipCommand(userId));
 
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> HandleGetUsersAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null)
+    {
+        var sort = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.Equals("Asc") ? SortOrder.Ascending : SortOrder.Descending : SortOrder.Descending;
+
+        var result = await sender.Send(new Query.GetUsersQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize));
         if (result.IsFailure)
             return HandlerFailure(result);
 

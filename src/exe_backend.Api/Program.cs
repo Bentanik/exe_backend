@@ -3,6 +3,7 @@ using exe_backend.Application.Workers;
 using exe_backend.Infrastructure.DepedencyInjection.Extensions;
 using exe_backend.Persistence.DepedencyInjection.Extensions;
 using HealthChecks.UI.Client;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http.Features;
 using System.Security.Claims;
@@ -72,6 +73,12 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Limits.MaxRequestBodySize = 400 * 1024 * 1024; // 400MB
 });
 
+builder.Services
+          .AddSwaggerGenNewtonsoftSupport()
+          .AddFluentValidationRulesToSwagger()
+          .AddEndpointsApiExplorer()
+          .AddSwagger();
+
 
 // Configuration Worker subscription
 //builder.Services.AddHostedService<SubscriptionCleanupWorker>();
@@ -84,6 +91,9 @@ if (app.Environment.IsDevelopment())
     // Seed database
     await app.InitialiseDatabaseAsync(builder.Configuration, builder.Services.BuildServiceProvider());
 }
+
+app.ConfigureSwagger();
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthentication();

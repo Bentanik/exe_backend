@@ -14,7 +14,7 @@ public static class DonateApi
         group.MapPost("donate", HandleDonateAsync);
         group.MapGet("success-donate", HandleSuccessDonateAsync);
         group.MapGet("fail-donate", HandleFailDonateAsync);
-
+        group.MapGet("get-donates", HandleGetDonatesAsync);
 
         return builder;
     }
@@ -55,6 +55,18 @@ public static class DonateApi
 
         return Results.Redirect(result?.Value);
     }
+
+    private static async Task<IResult> HandleGetDonatesAsync(ISender sender, [FromQuery] string? searchTerm = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null, int pageIndex = 1, int pageSize = 10, [FromQuery] string[]? includes = null)
+    {
+        var sort = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.Equals("Asc") ? SortOrder.Ascending : SortOrder.Descending : SortOrder.Descending;
+
+        var result = await sender.Send(new Query.GetDonatesQuery(searchTerm, sortColumn, sort, includes, pageIndex, pageSize));
+        if (result.IsFailure)
+            return HandlerFailure(result);
+
+        return Results.Ok(result);
+    }
+
 
     private static IResult HandlerFailure(Result result) =>
    result switch
