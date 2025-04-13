@@ -9,8 +9,7 @@ public sealed class GetDonatesQueryHandler
 {
     public async Task<Result<Success<Contract.Services.Donate.Response.DonatesResponse>>> Handle(Query.GetDonatesQuery query, CancellationToken cancellationToken)
     {
-        var donatesQuery = unitOfWork.DonateRepository.FindAll();
-
+        var donatesQuery = unitOfWork.DonateRepository.FindAll(includeProperties: x => x.User);
 
         // Get sort follow property
         Expression<Func<Domain.Models.Donate, object>> keySelector = query.SortColumn?.ToLower() switch

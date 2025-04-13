@@ -1,7 +1,6 @@
 using exe_backend.Contract.Abstractions.Shared;
 using exe_backend.Contract.DTOs.CourseDTOs;
 using exe_backend.Contract.Services.Course;
-using Firebase.Auth;
 
 namespace exe_backend.Presentation.Apis;
 
@@ -13,14 +12,11 @@ public static class CourseApi
         var group = builder.MapGroup(BaseUrl).HasApiVersion(1);
 
         // Role Admin
-        group.MapPost("create-course", HandleCreateCourseAsync)
-            .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapPost("create-course", HandleCreateCourseAsync);
 
-        group.MapPost("create-chapter", HandleCreateChapterAsync)
-            .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapPost("create-chapter", HandleCreateChapterAsync);
 
-        group.MapPost("create-lecture", HandleCreateLectureAsync)
-            .RequireAuthorization(RoleEnum.Admin.ToString());
+        group.MapPost("create-lecture", HandleCreateLectureAsync);
 
         group.MapGet("get-courses", HandleGetCoursesAsync);
 
@@ -30,11 +26,9 @@ public static class CourseApi
 
         group.MapGet("get-chapter-by-id", HandleGetChapterByIdAsync);
 
-        group.MapGet("get-lectures", HandleGetLecturesAsync)
-            .RequireAuthorization(RoleEnum.AdminAndMember.ToString());
+        group.MapGet("get-lectures", HandleGetLecturesAsync);
 
-        group.MapGet("get-lecture-by-id", HandleGetLectureByIdAsync)
-            .RequireAuthorization(RoleEnum.AdminAndMember.ToString());
+        group.MapGet("get-lecture-by-id", HandleGetLectureByIdAsync);
 
         return builder;
     }
